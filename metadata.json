@@ -1,0 +1,6 @@
+{
+  "name": "DEMOCRATIC 2028",
+  "description": "2028政治讽刺推特辩论与实时全美选情模拟游戏——在推特战场击碎废除第22修正案的极权妄想，夺回宾夕法尼亚大道1600号。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
