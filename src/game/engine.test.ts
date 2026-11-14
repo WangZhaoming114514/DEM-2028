@@ -23,8 +23,8 @@ test('ENDING_CATALOG contains 20 unique endings covering all categories', () => 
   assert.equal(ENDING_CATALOG.length, 20);
   const ids = new Set(ENDING_CATALOG.map((e) => e.id));
   assert.equal(ids.size, 20);
-  assert.equal(ENDING_CATALOG.filter((e) => e.category === 'hidden').length, 8);
-  assert.equal(ENDING_CATALOG.filter((e) => e.category === 'victory').length, 4);
+  assert.equal(ENDING_CATALOG.filter((e) => e.category === 'hidden').length, 9);
+  assert.equal(ENDING_CATALOG.filter((e) => e.category === 'victory').length, 3);
   assert.equal(ENDING_CATALOG.filter((e) => e.category === 'unconventional').length, 4);
   assert.equal(ENDING_CATALOG.filter((e) => e.category === 'loss').length, 4);
 });
@@ -72,15 +72,28 @@ test('all 6 user-requested hidden endings + Yankee-Red Sox trigger accurately', 
   huey.finished = true;
   assert.equal(resolveCampaignEnding(huey).id, 'huey_long');
 
-  // 2. WHAT THE FUCK, DIXIECRAT?!?!?!
+  // 2. WHAT THE FUCK, DIXIECRAT?!?!?! (Win Deep South + lose CA/NY/MA + WIN election >= 270)
   const dixie = createInitialCampaign();
+  for (const k of Object.keys(dixie.margins) as StateCode[]) {
+    dixie.margins[k] = 4.0;
+  }
   dixie.ideology = 'conservative';
   dixie.margins.AL = 3.0;
   dixie.margins.MS = 2.5;
   dixie.margins.LA = 4.0;
   dixie.margins.NY = -2.0;
   dixie.finished = true;
+  assert.ok(computeElectoralSummary(dixie.margins).demEV >= 270);
   assert.equal(resolveCampaignEnding(dixie).id, 'dixiecrat');
+
+  // 2b. Full 10-round Dixiecrat WIN preset path
+  let dixieWinRun = createInitialCampaign();
+  const dixieWinPath = [3, 1, 1, 1, 0, 2, 1, 0, 3, 1];
+  for (let r = 0; r < 10; r++) {
+    dixieWinRun = applyChoiceTurn(dixieWinRun, ROUND_SCENARIOS[r].choices[dixieWinPath[r]]);
+  }
+  assert.ok(computeElectoralSummary(dixieWinRun.margins).demEV >= 270);
+  assert.equal(resolveCampaignEnding(dixieWinRun).id, 'dixiecrat');
 
   // 3. Sir, you’d be better off doing what Mondale did—winning Minnesota by 3,000 votes.
   const mondale = createInitialCampaign();
@@ -162,7 +175,45 @@ test('unconventional and defeat endings trigger under their exact rules', () => 
 
   const blueDog = createInitialCampaign();
   blueDog.ideology = 'conservative';
-  assert.equal(evaluateEnding(blueDog, 285).id, 'blue_dog_reversal');
+  assert.equal(evaluateEnding(blueDog, 345).id, 'blue_dog_reversal');
+
+  // Full 10-round Blue Dog Conservative preset path
+  let blueDogRun = createInitialCampaign();
+  const blueDogPath = [3, 1, 1, 1, 0, 1, 1, 0, 0, 0];
+  for (let r = 0; r < 10; r++) {
+    blueDogRun = applyChoiceTurn(blueDogRun, ROUND_SCENARIOS[r].choices[blueDogPath[r]]);
+  }
+  assert.equal(blueDogRun.ideology, 'conservative');
+  assert.equal(resolveCampaignEnding(blueDogRun).id, 'blue_dog_reversal');
+
+  // Segregation Now! (Win Deep South but lose election < 270 EV)
+  const segNow = createInitialCampaign();
+  for (const k of Object.keys(segNow.margins) as StateCode[]) {
+    segNow.margins[k] = -12;
+  }
+  segNow.margins.DC = 50;
+  segNow.margins.CA = 15;
+  segNow.margins.WA = 12;
+  segNow.margins.IL = 10;
+  segNow.margins.MN = 6;
+  segNow.margins.AL = 3.5;
+  segNow.margins.MS = 2.5;
+  segNow.margins.NY = -5;
+  assert.ok(computeElectoralSummary(segNow.margins).demEV < 270);
+  const segRes = resolveCampaignEnding(segNow);
+  assert.equal(segRes.id, 'segregation_now');
+  assert.equal(segRes.isHidden, true);
+  assert.equal(segRes.category, 'hidden');
+  assert.equal(segRes.title, 'Segregation now, segregation tomorrow, segregation forever!');
+
+  // Full 10-round Segregation Now! preset path
+  let segRun = createInitialCampaign();
+  const segPath = [3, 0, 3, 3, 2, 2, 0, 3, 3, 3];
+  for (let r = 0; r < 10; r++) {
+    segRun = applyChoiceTurn(segRun, ROUND_SCENARIOS[r].choices[segPath[r]]);
+  }
+  assert.ok(computeElectoralSummary(segRun.margins).demEV < 270);
+  assert.equal(resolveCampaignEnding(segRun).id, 'segregation_now');
 
   const wokeLoss = createInitialCampaign();
   wokeLoss.ideology = 'woke';

@@ -25,12 +25,12 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
     isHidden: true,
     category: 'hidden',
     title: 'WHAT THE FUCK, DIXIECRAT?!?!?!',
-    subtitle: '隐藏结局 · 1948年斯特罗姆·瑟蒙德附体？民主党全党原地石化',
+    subtitle: '隐藏结局 · 1948年瑟蒙德逆袭夺权！赢下南方、丢掉海岸线却拿下了白宫',
     epilogue:
-      'MSNBC导播室当场切错画面三分钟：你居然赢下了阿拉巴马、密西西比、路易斯安那等一连串深南红州，却把纽约、加州或马萨诸塞输给了唐纳德·川普？！民主党全国委员会主席看着地图怀疑日历是不是倒流回了1948年。',
-    badgeLabel: 'HIDDEN ENDING · DIXIECRAT',
+      'MSNBC和福克斯新闻的演播室同时陷入长达五分钟的死寂：你硬生生丢掉了纽约、加州或马萨诸塞这样的海岸线蓝营铁票仓，却在路易斯安那、密西西比、阿拉巴马和南卡罗来纳杀穿了深南版图，并一路凑齐超过270张选举人票迈进白宫！民主党全国委员会主席看着地图怀疑自己是不是穿越回了1948年。',
+    badgeLabel: 'HIDDEN ENDING · DIXIECRAT WIN',
     theme: 'cursed',
-    hint: '线索：反复打保守派/南方州权牌，赢下至少2个深南州（如LA/MS/AL/SC）并激怒海岸线或落败。',
+    hint: '线索：狂打南方州权与石油牌，赢下至少 2 个深南州且丢掉 CA、NY 或 MA 之一，同时总票数仍达 270+ 胜选。',
   },
   {
     id: 'mondale',
@@ -51,10 +51,10 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
     title: 'FDR IN 2028',
     subtitle: '隐藏结局 · 1936年式蓝色超级大洪水，碾碎第22修正案复辟',
     epilogue:
-      '你横扫全美超过380张选举人票！从五大湖到阳光带，从西海岸到阿巴拉契亚边缘，整片大陆被刷成了令人窒息的深蓝。川普的“无限连任”白日梦在凌晨两点前彻底蒸发，万斯连夜清空推特草稿箱，卢比奥买光了机场便利店的矿泉水。历史学家将这一夜定名为“新新政元年”。',
+      '你横扫全美超过385张选举人票！从五大湖到阳光带，从西海岸到阿巴拉契亚边缘，整片大陆被刷成了令人窒息的深蓝。川普的“无限连任”白日梦在凌晨两点前彻底蒸发，万斯连夜清空推特草稿箱，卢比奥买光了机场便利店的矿泉水。历史学家将这一夜定名为“新新政元年”。',
     badgeLabel: 'HIDDEN ENDING · FDR 2028',
     theme: 'victory',
-    hint: '线索：以压倒性的跨派系动员赢下至少380张选举人票。',
+    hint: '线索：以压倒性的跨派系动员赢下至少385张选举人票。',
   },
   {
     id: 'pigasus',
@@ -104,8 +104,20 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
     theme: 'chaos',
     hint: '线索：第8回合高喊“面包、黄油、培根与豆子”，并配合能源/民粹路线大幅拉升俄克拉荷马（OK）选情。',
   },
+  {
+    id: 'segregation_now',
+    isHidden: true,
+    category: 'hidden',
+    title: 'Segregation now, segregation tomorrow, segregation forever!',
+    subtitle: '隐藏结局 · 1963年乔治·华莱士幽灵附体？赢下深南红州却把白宫输光',
+    epilogue:
+      '阿拉巴马、密西西比、路易斯安那与南卡罗来纳的计票器在夜里刷出一片刺眼的深蓝——你把1963年乔治·华莱士站在蒙哥马利州议会台阶上的那句臭名昭著的台词与州权剧本背得滚瓜烂熟。唯一的代价是全美其余大部分州把你连同南方州权宣言一起踢出了局，宾夕法尼亚大道1600号继续由川普和万斯永久霸占。',
+    badgeLabel: 'HIDDEN ENDING · WALLACE 1963',
+    theme: 'cursed',
+    hint: '线索：狂打南方州权牌赢下至少 2 个深南州（AL/MS/LA/SC/AR/TN），但最终总票数不足 270 败选。',
+  },
 
-  // ==================== NORMAL VICTORY ENDINGS (4) ====================
+  // ==================== NORMAL VICTORY ENDINGS (3) ====================
   {
     id: 'blue_tsunami',
     isHidden: false,
@@ -116,7 +128,7 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
       '经过十个回合的全网舆论肉搏，你以超过335张选举人票的庞大优势横扫全部核心摇摆州。次日清晨，国会山两院火速起草恢复宪法第22修正案的紧急法案，川普连夜带着他装满高尔夫球杆和机密文件箱的专机飞回佛罗里达。',
     badgeLabel: 'LANDSLIDE VICTORY · 335+',
     theme: 'victory',
-    hint: '正常通关：赢得 335–379 张选举人票（且未触发特殊隐藏条件）。',
+    hint: '正常通关：赢得 335–384 张选举人票（且未触发非常规或隐藏条件）。',
   },
   {
     id: 'blue_wall_normalcy',
@@ -125,10 +137,10 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
     title: 'BLUE WALL FORTRESS: RETURN TO BORING NORMALCY',
     subtitle: '常规胜选 · 自由/温和派主导，让华盛顿重新无聊起来',
     epilogue:
-      '宾夕法尼亚、密歇根和威斯康星稳稳筑起蓝墙，郊区中产与独立选民用选票证明他们实在受够了每天凌晨三点被总统的荒诞推文吵醒。你以体面的建制派风格走进宾夕法尼亚大道1600号——白宫记者团终于又能正常睡个整觉了。',
-    badgeLabel: 'VICTORY · BLUE WALL',
+      '你在宾夕法尼亚与各大战场顶住压力夺回白宫，郊区中产与独立选民用选票证明他们实在受够了每天凌晨三点被总统的荒诞推文吵醒。你以体面的建制派风格走进宾夕法尼亚大道1600号——白宫记者团终于又能正常睡个整觉了。',
+    badgeLabel: 'VICTORY · NORMALCY',
     theme: 'victory',
-    hint: '正常胜选：以自由派或温和派路线获胜（270–334票）并守住蓝墙。',
+    hint: '正常胜选：以自由派或温和派路线赢得 270–334 张选举人票。',
   },
   {
     id: 'new_new_deal',
@@ -141,18 +153,6 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
     badgeLabel: 'VICTORY · LABOR COALITION',
     theme: 'victory',
     hint: '正常胜选：以进步派或民粹路线赢下大选（270–334票）。',
-  },
-  {
-    id: 'reclaimed_1600',
-    isHidden: false,
-    category: 'victory',
-    title: '1600 PENNSYLVANIA AVENUE RECLAIMED!',
-    subtitle: '常规胜选 · 惊险跨越270票生死线，夺回白宫',
-    epilogue:
-      '全美选情在钢丝绳上摇晃了整整一夜，直到最后几个摇摆县的邮寄选票点算完毕，你终于艰难跨过270票门槛！第22修正案的尊严勉强保住，JD·万斯和马可·卢比奥的政治履历同时被写进了讽刺喜剧的永久素材库。FUCK YEAH！',
-    badgeLabel: 'VICTORY · 270+ RECLAIMED',
-    theme: 'victory',
-    hint: '正常胜选：以任意常规路径赢得 270–334 张选举人票。',
   },
 
   // ==================== UNCONVENTIONAL BUT PLAUSIBLE (4) ====================
@@ -292,16 +292,13 @@ export function evaluateEnding(
     return ENDINGS_BY_ID.mondale;
   }
 
-  // 3. WHAT THE FUCK, DIXIECRAT?!?!?!
-  if (
-    (deepSouthWon >= 2 && (coastalLost || (state.flags.dixiecratUsed && demEV < 270))) ||
-    (deepSouthWon >= 1 && coastalLost && state.flags.dixiecratUsed)
-  ) {
+  // 3. WHAT THE FUCK, DIXIECRAT?!?!?! (Win the South + lose CA, NY, or MA + WIN the election >= 270)
+  if (demEV >= 270 && deepSouthWon >= 2 && coastalLost) {
     return ENDINGS_BY_ID.dixiecrat;
   }
 
   // 4. FDR IN 2028
-  if (demEV >= 380) {
+  if (demEV >= 385) {
     const fdr = ENDINGS_BY_ID.fdr_2028;
     return {
       ...fdr,
@@ -309,7 +306,15 @@ export function evaluateEnding(
     };
   }
 
-  // 5. ALFALFA BILL (Oklahoma agrarian-oilfield populist resurgence)
+  // 5. SEGREGATION NOW! (Win Deep South but LOSE the election < 270)
+  if (
+    demEV < 270 &&
+    (deepSouthWon >= 2 || (deepSouthWon >= 1 && state.flags.dixiecratUsed && !state.flags.alfalfaBillUsed))
+  ) {
+    return ENDINGS_BY_ID.segregation_now;
+  }
+
+  // 6. ALFALFA BILL (Oklahoma agrarian-oilfield populist resurgence)
   if (
     m.OK > 0 ||
     (state.flags.alfalfaBillUsed && m.OK > -12)
@@ -320,7 +325,7 @@ export function evaluateEnding(
     };
   }
 
-  // 6. KINGFISH HUEY LONG IN LOUISIANA AGAIN?
+  // 7. KINGFISH HUEY LONG IN LOUISIANA AGAIN?
   if (
     m.LA > 0 &&
     (state.meters.populism >= 62 || state.ideology === 'populist' || state.flags.hueyLongUsed)
@@ -331,12 +336,12 @@ export function evaluateEnding(
     };
   }
 
-  // 6. Texas has flipped blue—you still lost ……
+  // 8. Texas has flipped blue—you still lost ……
   if (m.TX > 0 && demEV < 270) {
     return ENDINGS_BY_ID.bluxas_lost;
   }
 
-  // 7. Yankee–Red Sox Miracle
+  // 9. Yankee–Red Sox Miracle
   if (
     demEV >= 270 &&
     state.flags.yankeeRedSoxCount >= 2 &&
@@ -347,17 +352,13 @@ export function evaluateEnding(
     return ENDINGS_BY_ID.yankee_redsox;
   }
 
-  // 8. 269–269 Exact Tie
+  // 10. 269–269 Exact Tie
   if (demEV === 269) {
     return ENDINGS_BY_ID.tie_269;
   }
 
   // ==================== VICTORY BRANCHES (>= 270 EV) ====================
   if (demEV >= 270) {
-    if (demEV >= 335) {
-      return ENDINGS_BY_ID.blue_tsunami;
-    }
-
     // Unconventional: Sun Belt Realignment (won AZ+GA+NC but lost part of Blue Wall)
     if (
       m.AZ > 0 &&
@@ -378,22 +379,17 @@ export function evaluateEnding(
       return ENDINGS_BY_ID.blue_dog_reversal;
     }
 
+    if (demEV >= 335) {
+      return ENDINGS_BY_ID.blue_tsunami;
+    }
+
     // Normal: Labor/Progressive Coalition
     if (state.ideology === 'progressive' || state.ideology === 'populist') {
       return ENDINGS_BY_ID.new_new_deal;
     }
 
-    // Normal: Blue Wall Return to Normalcy
-    if (
-      (state.ideology === 'liberal' || state.ideology === 'moderate') &&
-      m.PA > 0 &&
-      m.MI > 0 &&
-      m.WI > 0
-    ) {
-      return ENDINGS_BY_ID.blue_wall_normalcy;
-    }
-
-    return ENDINGS_BY_ID.reclaimed_1600;
+    // Normal: Liberal/Moderate Victory
+    return ENDINGS_BY_ID.blue_wall_normalcy;
   }
 
   // ==================== DEFEAT BRANCHES (< 269 EV) ====================
