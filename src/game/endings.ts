@@ -114,7 +114,7 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
       '阿拉巴马、密西西比、路易斯安那与南卡罗来纳的计票器在夜里刷出一片刺眼的深蓝——你把1963年乔治·华莱士站在蒙哥马利州议会台阶上的那句臭名昭著的台词与州权剧本背得滚瓜烂熟。唯一的代价是全美其余大部分州把你连同南方州权宣言一起踢出了局，宾夕法尼亚大道1600号继续由川普和万斯永久霸占。',
     badgeLabel: 'HIDDEN ENDING · WALLACE 1963',
     theme: 'cursed',
-    hint: '线索：狂打南方州权牌赢下至少 2 个深南州（AL/MS/LA/SC/AR/TN），但最终总票数不足 270 败选。',
+    hint: '线索：狂打南方州权牌并必须真正赢下阿拉巴马州（AL > 0）等深南阵地，但最终总票数不足 270 败选。',
   },
 
   // ==================== NORMAL VICTORY ENDINGS (3) ====================
@@ -264,15 +264,27 @@ export const ENDINGS_BY_ID: Record<string, EndingCatalogEntry> = ENDING_CATALOG.
   {} as Record<string, EndingCatalogEntry>
 );
 
-export function evaluateEnding(
+export interface MultiEndingResolution {
+  primary: EndingResult;
+  allTriggered: EndingResult[];
+}
+
+interface ScoredEnding {
+  ending: EndingResult;
+  specificity: number;
+}
+
+export function evaluateEndings(
   state: CampaignState,
   demEV: number
-): EndingResult {
+): MultiEndingResolution {
   const m = state.margins;
 
   const deepSouthCodes: StateCode[] = ['AL', 'MS', 'LA', 'SC', 'AR', 'TN'];
   const deepSouthWon = deepSouthCodes.filter((c) => m[c] > 0).length;
   const coastalLost = (['NY', 'CA', 'MA'] as StateCode[]).some((c) => m[c] <= 0);
+
+  const candidates: ScoredEnding[] = [];
 
   // 1. Pigasus catastrophic humiliation
   if (
@@ -281,7 +293,10 @@ export function evaluateEnding(
     (state.flags.pigasusCount > 0 && (demEV < 185 || m.IL <= 0)) ||
     (demEV <= 60 && m.MN <= 0)
   ) {
-    return ENDINGS_BY_ID.pigasus;
+    candidates.push({
+      ending: ENDINGS_BY_ID.pigasus,
+      specificity: 65 + state.flags.pigasusCount * 25 + (demEV <= 12 ? 35 : 0),
+    });
   }
 
   // 2. Mondale 1984 homage
@@ -289,32 +304,33 @@ export function evaluateEnding(
     (demEV < 110 && m.MN > 0) ||
     (demEV < 220 && m.MN > 0 && (m.MN < 3.5 || state.flags.mondaleDefense))
   ) {
-    return ENDINGS_BY_ID.mondale;
+    candidates.push({
+      ending: ENDINGS_BY_ID.mondale,
+      specificity: 68 + (state.flags.mondaleDefense ? 30 : 0) + (demEV < 110 ? 15 : 0),
+    });
   }
 
-  // 3. WHAT THE FUCK, DIXIECRAT?!?!?! (Win the South + lose CA, NY, or MA + WIN the election >= 270)
+  // 3. WHAT THE FUCK, DIXIECRAT?!?!?! (Win Deep South + lose CA, NY, or MA + WIN >= 270)
   if (demEV >= 270 && deepSouthWon >= 2 && coastalLost) {
-    return ENDINGS_BY_ID.dixiecrat;
+    candidates.push({
+      ending: ENDINGS_BY_ID.dixiecrat,
+      specificity: 86 + (state.flags.dixiecratUsed ? 20 : 0) + (m.AL > 0 ? 8 : 0),
+    });
   }
 
-  // 4. FDR IN 2028
-  if (demEV >= 385) {
-    const fdr = ENDINGS_BY_ID.fdr_2028;
-    return {
-      ...fdr,
-      epilogue: `你横扫全美 ${demEV} 张选举人票！从五大湖到阳光带，从西海岸到阿巴拉契亚边缘，整片大陆被刷成了令人窒息的深蓝。川普的“无限连任”白日梦在凌晨两点前彻底蒸发，万斯连夜清空推特草稿箱，卢比奥买光了机场便利店的矿泉水。历史学家将这一夜定名为“新新政元年”。`,
-    };
-  }
-
-  // 5. SEGREGATION NOW! (Win Deep South but LOSE the election < 270)
+  // 4. Segregation now, segregation tomorrow, segregation forever! (MUST strictly win Alabama AL > 0 + lose < 270)
   if (
     demEV < 270 &&
-    (deepSouthWon >= 2 || (deepSouthWon >= 1 && state.flags.dixiecratUsed && !state.flags.alfalfaBillUsed))
+    m.AL > 0 &&
+    (deepSouthWon >= 2 || state.flags.dixiecratUsed)
   ) {
-    return ENDINGS_BY_ID.segregation_now;
+    candidates.push({
+      ending: ENDINGS_BY_ID.segregation_now,
+      specificity: 76 + (state.flags.dixiecratUsed ? 20 : 0) + Math.max(0, m.AL),
+    });
   }
 
-  // 6. ALFALFA BILL (Oklahoma agrarian-oilfield populist resurgence — MUST strictly win OK)
+  // 5. ALFALFA BILL (MUST strictly win Oklahoma OK > 0)
   if (
     m.OK > 0 &&
     (state.flags.alfalfaBillUsed ||
@@ -322,29 +338,38 @@ export function evaluateEnding(
       state.ideology === 'conservative' ||
       state.meters.populism >= 55)
   ) {
-    return {
-      ...ENDINGS_BY_ID.alfalfa_bill,
-      theme: demEV >= 270 ? 'victory' : 'chaos',
-    };
+    candidates.push({
+      ending: {
+        ...ENDINGS_BY_ID.alfalfa_bill,
+        theme: demEV >= 270 ? 'victory' : 'chaos',
+      },
+      specificity: 82 + (state.flags.alfalfaBillUsed ? 25 : 0) + Math.max(0, m.OK),
+    });
   }
 
-  // 7. KINGFISH HUEY LONG IN LOUISIANA AGAIN?
+  // 6. KINGFISH HUEY LONG IN LOUISIANA AGAIN? (MUST strictly win Louisiana LA > 0)
   if (
     m.LA > 0 &&
     (state.meters.populism >= 62 || state.ideology === 'populist' || state.flags.hueyLongUsed)
   ) {
-    return {
-      ...ENDINGS_BY_ID.huey_long,
-      theme: demEV >= 270 ? 'victory' : 'chaos',
-    };
+    candidates.push({
+      ending: {
+        ...ENDINGS_BY_ID.huey_long,
+        theme: demEV >= 270 ? 'victory' : 'chaos',
+      },
+      specificity: 72 + (state.flags.hueyLongUsed ? 20 : 0) + (state.ideology === 'populist' ? 10 : 0) + Math.max(0, m.LA),
+    });
   }
 
-  // 8. Texas has flipped blue—you still lost ……
+  // 7. Texas has flipped blue—you still lost ……
   if (m.TX > 0 && demEV < 270) {
-    return ENDINGS_BY_ID.bluxas_lost;
+    candidates.push({
+      ending: ENDINGS_BY_ID.bluxas_lost,
+      specificity: 74 + Math.max(0, m.TX),
+    });
   }
 
-  // 9. Yankee–Red Sox Miracle
+  // 8. Yankee–Red Sox Miracle
   if (
     demEV >= 270 &&
     state.flags.yankeeRedSoxCount >= 2 &&
@@ -352,63 +377,84 @@ export function evaluateEnding(
     m.MA > 20 &&
     m.PA > 0
   ) {
-    return ENDINGS_BY_ID.yankee_redsox;
+    candidates.push({
+      ending: ENDINGS_BY_ID.yankee_redsox,
+      specificity: 80 + state.flags.yankeeRedSoxCount * 10,
+    });
+  }
+
+  // 9. FDR IN 2028 (broad landslide >= 385 EV — co-unlocks alongside specific hidden victories without erasing them)
+  if (demEV >= 385) {
+    const fdr = ENDINGS_BY_ID.fdr_2028;
+    candidates.push({
+      ending: {
+        ...fdr,
+        epilogue: `你横扫全美 ${demEV} 张选举人票！从五大湖到阳光带，从西海岸到阿巴拉契亚边缘，整片大陆被刷成了令人窒息的深蓝。川普的“无限连任”白日梦在凌晨两点前彻底蒸发，万斯连夜清空推特草稿箱，卢比奥买光了机场便利店的矿泉水。历史学家将这一夜定名为“新新政元年”。`,
+      },
+      specificity: 55 + (demEV >= 435 ? 25 : 0),
+    });
   }
 
   // 10. 269–269 Exact Tie
   if (demEV === 269) {
-    return ENDINGS_BY_ID.tie_269;
+    candidates.push({
+      ending: ENDINGS_BY_ID.tie_269,
+      specificity: 105,
+    });
+  }
+
+  if (candidates.length > 0) {
+    candidates.sort((a, b) => b.specificity - a.specificity);
+    const allTriggered = candidates.map((c) => c.ending);
+    return {
+      primary: allTriggered[0],
+      allTriggered,
+    };
   }
 
   // ==================== VICTORY BRANCHES (>= 270 EV) ====================
   if (demEV >= 270) {
-    // Unconventional: Sun Belt Realignment (won AZ+GA+NC but lost part of Blue Wall)
+    let primary: EndingResult;
     if (
       m.AZ > 0 &&
       m.GA > 0 &&
       m.NC > 0 &&
       (m.PA <= 0 || m.MI <= 0 || m.WI <= 0)
     ) {
-      return ENDINGS_BY_ID.sun_belt_realignment;
+      primary = ENDINGS_BY_ID.sun_belt_realignment;
+    } else if (state.ideology === 'dark' || state.meters.chaos >= 75) {
+      primary = ENDINGS_BY_ID.dark_brandon_ascendant;
+    } else if (state.ideology === 'conservative') {
+      primary = ENDINGS_BY_ID.blue_dog_reversal;
+    } else if (demEV >= 335) {
+      primary = ENDINGS_BY_ID.blue_tsunami;
+    } else if (state.ideology === 'progressive' || state.ideology === 'populist') {
+      primary = ENDINGS_BY_ID.new_new_deal;
+    } else {
+      primary = ENDINGS_BY_ID.blue_wall_normalcy;
     }
-
-    // Unconventional: Dark Brandon Ascendant
-    if (state.ideology === 'dark' || state.meters.chaos >= 75) {
-      return ENDINGS_BY_ID.dark_brandon_ascendant;
-    }
-
-    // Unconventional: Blue Dog Conservative Reversal
-    if (state.ideology === 'conservative') {
-      return ENDINGS_BY_ID.blue_dog_reversal;
-    }
-
-    if (demEV >= 335) {
-      return ENDINGS_BY_ID.blue_tsunami;
-    }
-
-    // Normal: Labor/Progressive Coalition
-    if (state.ideology === 'progressive' || state.ideology === 'populist') {
-      return ENDINGS_BY_ID.new_new_deal;
-    }
-
-    // Normal: Liberal/Moderate Victory
-    return ENDINGS_BY_ID.blue_wall_normalcy;
+    return { primary, allTriggered: [primary] };
   }
 
   // ==================== DEFEAT BRANCHES (< 269 EV) ====================
+  let primary: EndingResult;
   if (state.ideology === 'woke') {
-    return ENDINGS_BY_ID.woke_echo_chamber;
+    primary = ENDINGS_BY_ID.woke_echo_chamber;
+  } else if (m.PA <= 0 && m.MI <= 0 && m.WI <= 0 && demEV >= 180) {
+    primary = ENDINGS_BY_ID.rust_belt_betrayal;
+  } else if (demEV >= 240) {
+    primary = ENDINGS_BY_ID.consultants_graveyard;
+  } else {
+    primary = ENDINGS_BY_ID.dynasty_loss;
   }
+  return { primary, allTriggered: [primary] };
+}
 
-  if (m.PA <= 0 && m.MI <= 0 && m.WI <= 0 && demEV >= 180) {
-    return ENDINGS_BY_ID.rust_belt_betrayal;
-  }
-
-  if (demEV >= 240) {
-    return ENDINGS_BY_ID.consultants_graveyard;
-  }
-
-  return ENDINGS_BY_ID.dynasty_loss;
+export function evaluateEnding(
+  state: CampaignState,
+  demEV: number
+): EndingResult {
+  return evaluateEndings(state, demEV).primary;
 }
 
 const STORAGE_KEY = 'democratic2028_unlocked_endings_v1';
@@ -425,22 +471,28 @@ export function loadUnlockedEndings(): Record<string, UnlockedEndingRecord> {
   }
 }
 
-export function saveUnlockedEnding(
-  endingId: string,
+export function saveUnlockedEndings(
+  endingIds: string[],
   demEV: number
-): { records: Record<string, UnlockedEndingRecord>; isNewlyUnlocked: boolean } {
+): { records: Record<string, UnlockedEndingRecord>; newlyUnlockedIds: string[] } {
   const records = loadUnlockedEndings();
-  const existing = records[endingId];
-  const isNewlyUnlocked = !existing;
-  const updated: Record<string, UnlockedEndingRecord> = {
-    ...records,
-    [endingId]: {
+  const updated: Record<string, UnlockedEndingRecord> = { ...records };
+  const newlyUnlockedIds: string[] = [];
+  const now = new Date().toISOString();
+
+  for (const endingId of endingIds) {
+    const existing = updated[endingId];
+    if (!existing) {
+      newlyUnlockedIds.push(endingId);
+    }
+    updated[endingId] = {
       id: endingId,
-      unlockedAt: existing?.unlockedAt ?? new Date().toISOString(),
+      unlockedAt: existing?.unlockedAt ?? now,
       bestDemEV: existing ? Math.max(existing.bestDemEV, demEV) : demEV,
       count: (existing?.count ?? 0) + 1,
-    },
-  };
+    };
+  }
+
   if (typeof window !== 'undefined') {
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
@@ -448,5 +500,16 @@ export function saveUnlockedEnding(
       // Ignore storage quota failures silently
     }
   }
-  return { records: updated, isNewlyUnlocked };
+  return { records: updated, newlyUnlockedIds };
+}
+
+export function saveUnlockedEnding(
+  endingId: string,
+  demEV: number
+): { records: Record<string, UnlockedEndingRecord>; isNewlyUnlocked: boolean } {
+  const res = saveUnlockedEndings([endingId], demEV);
+  return {
+    records: res.records,
+    isNewlyUnlocked: res.newlyUnlockedIds.includes(endingId),
+  };
 }

@@ -1,4 +1,4 @@
-import { evaluateEnding } from './endings';
+import { evaluateEnding, evaluateEndings, MultiEndingResolution } from './endings';
 import { EMPTY_IDEOLOGY_SCORES, getDominantIdeology, IDEOLOGIES_BY_ID } from './ideologies';
 import { ROUND_SCENARIOS } from './scenarios';
 import { STATES_BY_CODE, STATES_DATA } from './statesData';
@@ -317,30 +317,73 @@ export function applyCustomTweetTurn(
 
 /** Deterministic local analyzer for custom tweets using American political satire cues */
 export function evaluateCustomTweetLocally(text: string, currentIdeology: IdeologyId): CustomTweetEval {
-  const lower = text.toLowerCase();
-  const hasYankee = text.includes('洋基') || lower.includes('yankee');
-  const hasRedSox = text.includes('红袜') || lower.includes('red sox');
-  const hasDem = text.includes('民主党') || lower.includes('democrat');
-  const has1600 = text.includes('1600') || text.includes('宾夕法尼亚大道') || text.includes('白宫');
-  const hasHuey = text.includes('休伊') || text.includes('路易斯安那') || lower.includes('kingfish') || lower.includes('huey');
+  const baseballNegated = /(讨厌|抵制|滚出|烂透).{0,8}(洋基|红袜|yankee|red\s*sox)/i.test(text);
+  const hasYankee = !baseballNegated && (text.includes('洋基') || /\byankees?\b/i.test(text));
+  const hasRedSox = !baseballNegated && (text.includes('红袜') || /\bred\s*sox\b/i.test(text));
+  const hasDem = text.includes('民主党') || /\bdemocrats?\b/i.test(text);
+  const has1600 = text.includes('宾夕法尼亚大道1600') || text.includes('宾夕法尼亚大道') || text.includes('1600号') || text.includes('白宫');
+  const hasHuey =
+    text.includes('休伊·朗') ||
+    text.includes('休伊朗') ||
+    text.includes('路易斯安那') ||
+    text.includes('巴吞鲁日') ||
+    text.includes('均分财富') ||
+    /\bkingfish\b/i.test(text) ||
+    /\bhuey(\s+long)?\b/i.test(text) ||
+    /\bevery\s+man\s+a\s+king\b/i.test(text);
   const hasAlfalfa =
-    lower.includes('alfalfa') ||
+    /\balfalfa(\s+bill)?\b/i.test(text) ||
     text.includes('紫花苜蓿') ||
     text.includes('俄克拉荷马') ||
     text.includes('培根与豆子') ||
-    text.includes('红河');
-  const hasTexas = text.includes('得州') || text.includes('德州') || lower.includes('texas');
-  const hasWoke = text.includes('多元') || text.includes('性别') || text.includes('父权') || lower.includes('dei') || lower.includes('woke');
-  const hasConservative = text.includes('减税') || text.includes('石油') || text.includes('边境') || text.includes('治安') || text.includes('州权');
-  const hasPopulist = text.includes('寡头') || text.includes('华尔街') || text.includes('亿万富翁') || text.includes('工会');
+    text.includes('面包、黄油、培根') ||
+    text.includes('红河油田') ||
+    text.includes('红河派兵') ||
+    text.includes('威廉·默里');
+  const hasTexas = text.includes('得州') || text.includes('德州') || text.includes('得克萨斯') || /\btexas\b/i.test(text);
+  const hasWoke =
+    text.includes('多元包容') ||
+    text.includes('性别认同') ||
+    text.includes('父权制') ||
+    text.includes('交叉性') ||
+    text.includes('去殖民') ||
+    text.includes('觉醒主义') ||
+    /\bdei\b/i.test(text) ||
+    /\bwoke\b/i.test(text);
+  const hasConservative =
+    text.includes('减税') ||
+    text.includes('石油') ||
+    text.includes('钻井') ||
+    text.includes('边境') ||
+    text.includes('治安') ||
+    text.includes('南方州权') ||
+    text.includes('地方州权');
+  const hasPopulist = text.includes('寡头') || text.includes('华尔街') || text.includes('亿万富翁') || text.includes('联合工会') || text.includes('工会');
   const hasTrumpVanceRubio =
-    text.includes('川普') || text.includes('万斯') || text.includes('卢比奥') || lower.includes('trump') || lower.includes('vance') || lower.includes('rubio');
+    text.includes('川普') ||
+    text.includes('万斯') ||
+    text.includes('卢比奥') ||
+    /\btrump\b/i.test(text) ||
+    /\bvance\b/i.test(text) ||
+    /\brubio\b/i.test(text);
   const hasProfanityPunch =
-    text.includes('他妈') || text.includes('干死') || text.includes('滚蛋') || lower.includes('fuck') || lower.includes('shit');
+    /他妈的|去他妈|你妈的|干死|滚蛋/.test(text) ||
+    /\bfuck(ing|ed|er)?\b/i.test(text) ||
+    /\bshit(ty)?\b/i.test(text);
 
-  const hasDixie = text.includes('州权') || text.includes('瑟蒙德') || lower.includes('dixiecrat') || text.includes('深南');
-  const hasPigasus = lower.includes('pigasus') || text.includes('芝加哥小猪') || text.includes('猪都比');
-  const hasMondale = text.includes('蒙代尔') || lower.includes('mondale');
+  const hasDixie =
+    (/\bdixiecrat\b/i.test(text) ||
+      text.includes('深南') ||
+      text.includes('瑟蒙德') ||
+      text.includes('南方州权') ||
+      text.includes('种族隔离')) &&
+    !/(反对|批判|终结|废除|痛斥|告别).{0,10}(州权|瑟蒙德|种族隔离|dixiecrat)/i.test(text);
+  const hasPigasus =
+    (/\bpigasus\b/i.test(text) || /芝加哥.{0,6}小?猪|1968.{0,6}猪|提名.{0,4}猪/.test(text)) &&
+    !/(川普|万斯|卢比奥).{0,8}(猪|不如)/.test(text);
+  const hasMondale =
+    (/\bmondale\b/i.test(text) || text.includes('蒙代尔') || text.includes('保住明尼苏达')) &&
+    !/(别像|别学|不会像|不会重演|绝不重演|不重演|绝不当|绝不学|拒绝|避免|告别).{0,6}(蒙代尔|mondale)/i.test(text);
 
   const stateOverrides: Partial<Record<StateCode, number>> = {};
   const specialFlags: SpecialFlag[] = [];
@@ -375,7 +418,7 @@ export function evaluateCustomTweetLocally(text: string, currentIdeology: Ideolo
     addFlag('alfalfa_bill');
   }
   if (hasDixie) {
-    stateOverrides.AL = 5.0;
+    stateOverrides.AL = 8.5;
     stateOverrides.MS = 5.0;
     stateOverrides.SC = 4.5;
     addFlag('dixiecrat');
@@ -413,7 +456,7 @@ export function evaluateCustomTweetLocally(text: string, currentIdeology: Ideolo
 
   return {
     critique: hasYankee && hasRedSox ? '东海岸球场停火奇迹' : hasProfanityPunch ? '黑暗推特直球轰炸' : '即兴推特反击',
-    opponentSpeaker: text.includes('万斯') || lower.includes('vance') ? 'vance' : text.includes('卢比奥') || lower.includes('rubio') ? 'rubio' : 'trump',
+    opponentSpeaker: text.includes('万斯') || /\bvance\b/i.test(text) ? 'vance' : text.includes('卢比奥') || /\brubio\b/i.test(text) ? 'rubio' : 'trump',
     opponentReply: hasProfanityPunch
       ? '极其粗鲁！他把K街和福克斯新闻的主持人都骂愣了！快叫联邦通信委员会把他的账号吊销！'
       : '假新闻！他这句推文一听就是康涅狄格自由派公关公司连夜代写的！',
@@ -510,6 +553,11 @@ export function computeElectoralSummary(
     gopStates,
     swingWatch: swingCandidates.slice(0, 8),
   };
+}
+
+export function resolveCampaignEndings(state: CampaignState): MultiEndingResolution {
+  const summary = computeElectoralSummary(state.margins);
+  return evaluateEndings(state, summary.demEV);
 }
 
 export function resolveCampaignEnding(state: CampaignState): EndingResult {

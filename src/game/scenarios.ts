@@ -80,7 +80,7 @@ export const ROUND_SCENARIOS: RoundScenario[] = [
         effects: {
           nationalShift: 0.6,
           demographics: { southernPopulist: 6.2, moderateHeartland: 1.8, workingClass: 1.2, progressiveYouth: -4.5, suburban: -0.3 },
-          stateOverrides: { NY: -6.5, CA: -2.2, MA: -3.0, LA: 5.5, AL: 5.5, MS: 5.5, SC: 4.5 },
+          stateOverrides: { NY: -6.5, CA: -2.2, MA: -3.0, LA: 5.5, AL: 8.5, MS: 5.5, SC: 4.5 },
           meterDelta: { populism: 12, establishment: -6, chaos: 12 },
           ideologyDelta: { conservative: 4 },
           flags: ['dixiecrat'],
@@ -515,7 +515,7 @@ export const ROUND_SCENARIOS: RoundScenario[] = [
         effects: {
           nationalShift: 0.8,
           demographics: { southernPopulist: 7.8, workingClass: 2.0, moderateHeartland: 1.6, progressiveYouth: -5.2, suburban: -0.5 },
-          stateOverrides: { AL: 8.5, MS: 8.0, LA: 7.5, SC: 7.0, TX: 4.2, OK: 5.5, NY: -7.5, CA: -2.8, MA: -3.5 },
+          stateOverrides: { AL: 11.5, MS: 8.0, LA: 7.5, SC: 7.0, TX: 4.2, OK: 5.5, NY: -7.5, CA: -2.8, MA: -3.5 },
           meterDelta: { populism: 10, establishment: -8, chaos: 12 },
           ideologyDelta: { conservative: 4 },
           flags: ['dixiecrat'],
@@ -807,7 +807,7 @@ export const ROUND_SCENARIOS: RoundScenario[] = [
         effects: {
           nationalShift: 0.5,
           demographics: { southernPopulist: 9.2, workingClass: 1.4, moderateHeartland: 1.0, progressiveYouth: -5.5, suburban: -1.0 },
-          stateOverrides: { LA: 8.5, AL: 9.5, MS: 9.0, TN: 7.5, SC: 8.0, NY: -9.5, CA: -3.5, MA: -5.0 },
+          stateOverrides: { LA: 8.5, AL: 12.5, MS: 9.0, TN: 7.5, SC: 8.0, NY: -9.5, CA: -3.5, MA: -5.0 },
           meterDelta: { populism: 15, chaos: 20, establishment: -20 },
           ideologyDelta: { conservative: 4, populist: 1 },
           flags: ['dixiecrat', 'huey_long'],

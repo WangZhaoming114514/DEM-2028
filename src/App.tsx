@@ -11,12 +11,12 @@ import {
   computeElectoralSummary,
   createInitialCampaign,
   evaluateCustomTweetLocally,
-  resolveCampaignEnding,
+  resolveCampaignEndings,
 } from './game/engine';
 import {
   ENDING_CATALOG,
   loadUnlockedEndings,
-  saveUnlockedEnding,
+  saveUnlockedEndings,
 } from './game/endings';
 import { ROUND_SCENARIOS } from './game/scenarios';
 import {
@@ -48,7 +48,7 @@ export default function App() {
   const [unlockedEndings, setUnlockedEndings] = useState<Record<string, UnlockedEndingRecord>>(
     () => loadUnlockedEndings()
   );
-  const [isNewlyUnlocked, setIsNewlyUnlocked] = useState(false);
+  const [newlyUnlockedIds, setNewlyUnlockedIds] = useState<string[]>([]);
   const [codexOpen, setCodexOpen] = useState(false);
 
   useEffect(() => {
@@ -60,9 +60,9 @@ export default function App() {
     [campaign.margins, campaign.prevMargins]
   );
 
-  const ending = useMemo(() => {
+  const endingResolution = useMemo(() => {
     if (!campaign.finished) return null;
-    return resolveCampaignEnding(campaign);
+    return resolveCampaignEndings(campaign);
   }, [campaign]);
 
   const unlockedCount = useMemo(
@@ -71,13 +71,16 @@ export default function App() {
   );
 
   const finalizeCampaign = useCallback((nextCampaign: CampaignState) => {
-    const res = resolveCampaignEnding(nextCampaign);
+    const res = resolveCampaignEndings(nextCampaign);
     const finalSummary = computeElectoralSummary(nextCampaign.margins);
-    const saved = saveUnlockedEnding(res.id, finalSummary.demEV);
+    const saved = saveUnlockedEndings(
+      res.allTriggered.map((item) => item.id),
+      finalSummary.demEV
+    );
     setUnlockedEndings(saved.records);
-    setIsNewlyUnlocked(saved.isNewlyUnlocked);
+    setNewlyUnlockedIds(saved.newlyUnlockedIds);
 
-    if (res.theme === 'victory' || res.theme === 'chaos') {
+    if (res.primary.theme === 'victory' || res.primary.theme === 'chaos') {
       soundEngine.playVictory();
     } else {
       soundEngine.playDefeat();
@@ -92,7 +95,7 @@ export default function App() {
     soundEngine.playClick();
     setCampaign(createInitialCampaign());
     setSelectedState('PA');
-    setIsNewlyUnlocked(false);
+    setNewlyUnlockedIds([]);
     setCodexOpen(false);
     setPhase('playing');
   }, []);
@@ -294,11 +297,12 @@ export default function App() {
         />
       )}
 
-      {phase === 'gameover' && ending && !codexOpen && (
+      {phase === 'gameover' && endingResolution && !codexOpen && (
         <EndingModal
           campaign={campaign}
-          ending={ending}
-          isNewlyUnlocked={isNewlyUnlocked}
+          ending={endingResolution.primary}
+          allTriggeredEndings={endingResolution.allTriggered}
+          newlyUnlockedIds={newlyUnlockedIds}
           unlockedCount={unlockedCount}
           onPlayAgain={startNewCampaign}
           onOpenCodex={() => {

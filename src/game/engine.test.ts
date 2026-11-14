@@ -7,8 +7,9 @@ import {
   createInitialCampaign,
   evaluateCustomTweetLocally,
   resolveCampaignEnding,
+  resolveCampaignEndings,
 } from './engine';
-import { ENDING_CATALOG, evaluateEnding } from './endings';
+import { ENDING_CATALOG, evaluateEnding, evaluateEndings } from './endings';
 import { ROUND_SCENARIOS } from './scenarios';
 import { STATES_DATA } from './statesData';
 import { StateCode } from './types';
@@ -201,7 +202,19 @@ test('unconventional and defeat endings trigger under their exact rules', () => 
   assert.equal(blueDogRun.ideology, 'conservative');
   assert.equal(resolveCampaignEnding(blueDogRun).id, 'blue_dog_reversal');
 
-  // Segregation Now! (Win Deep South but lose election < 270 EV)
+  // Segregation Now! (MUST win Alabama AL > 0 and lose < 270 EV)
+  const segFailNoAL = createInitialCampaign();
+  for (const k of Object.keys(segFailNoAL.margins) as StateCode[]) {
+    segFailNoAL.margins[k] = -12;
+  }
+  segFailNoAL.margins.DC = 50;
+  segFailNoAL.margins.CA = 15;
+  segFailNoAL.margins.LA = 4.0;
+  segFailNoAL.margins.MS = 3.5;
+  segFailNoAL.margins.SC = 2.5;
+  segFailNoAL.margins.AL = -1.2;
+  assert.notEqual(resolveCampaignEnding(segFailNoAL).id, 'segregation_now');
+
   const segNow = createInitialCampaign();
   for (const k of Object.keys(segNow.margins) as StateCode[]) {
     segNow.margins[k] = -12;
@@ -221,12 +234,13 @@ test('unconventional and defeat endings trigger under their exact rules', () => 
   assert.equal(segRes.category, 'hidden');
   assert.equal(segRes.title, 'Segregation now, segregation tomorrow, segregation forever!');
 
-  // Full 10-round Segregation Now! preset path
+  // Full 10-round Segregation Now! preset path MUST flip Alabama AL > 0
   let segRun = createInitialCampaign();
   const segPath = [3, 0, 3, 3, 2, 2, 0, 3, 3, 3];
   for (let r = 0; r < 10; r++) {
     segRun = applyChoiceTurn(segRun, ROUND_SCENARIOS[r].choices[segPath[r]]);
   }
+  assert.ok(segRun.margins.AL > 0, `Expected AL > 0 on segRun, got ${segRun.margins.AL}`);
   assert.ok(computeElectoralSummary(segRun.margins).demEV < 270);
   assert.equal(resolveCampaignEnding(segRun).id, 'segregation_now');
 
@@ -275,4 +289,49 @@ test('custom tweet evaluation and preset choices support multiple SpecialFlag[] 
   presetMulti = applyChoiceTurn(presetMulti, ROUND_SCENARIOS[9].choices[2]);
   assert.equal(presetMulti.flags.yankeeRedSoxCount, 1);
   assert.equal(presetMulti.flags.darkBrandonCount, 1);
+});
+
+test('multi-ending resolution unlocks concurrent endings without masking specific achievements', () => {
+  // Specific Yankee-Red Sox + broad FDR 2028 (>=385) should keep Yankee-Red Sox as primary AND co-unlock fdr_2028
+  const combo = createInitialCampaign();
+  combo.flags.yankeeRedSoxCount = 2;
+  combo.margins.NY = 18;
+  combo.margins.MA = 25;
+  combo.margins.PA = 4;
+  const comboRes = evaluateEndings(combo, 392);
+  assert.equal(comboRes.primary.id, 'yankee_redsox');
+  assert.ok(comboRes.allTriggered.some((e) => e.id === 'yankee_redsox'));
+  assert.ok(comboRes.allTriggered.some((e) => e.id === 'fdr_2028'));
+
+  // Dual Oklahoma + Louisiana multi-flag run returns BOTH alfalfa_bill and huey_long
+  const dualSouth = createInitialCampaign();
+  dualSouth.flags.alfalfaBillUsed = true;
+  dualSouth.flags.hueyLongUsed = true;
+  dualSouth.margins.OK = 3.2;
+  dualSouth.margins.LA = 2.5;
+  const dualRes = resolveCampaignEndings(dualSouth);
+  assert.equal(dualRes.primary.id, 'alfalfa_bill');
+  assert.ok(dualRes.allTriggered.some((e) => e.id === 'alfalfa_bill'));
+  assert.ok(dualRes.allTriggered.some((e) => e.id === 'huey_long'));
+});
+
+test('custom tweet keyword evaluation avoids substring and negation false triggers', () => {
+  const innocent1 = evaluateCustomTweetLocally(
+    '我们要促进经济多元化发展，看看红河谷风光，记住他妈妈当年在汽车厂干过三十年！',
+    'liberal'
+  );
+  assert.deepEqual(innocent1.specialFlags, []);
+  assert.equal(innocent1.ideologyDelta?.woke, undefined);
+
+  const innocent2 = evaluateCustomTweetLocally(
+    'Trump deity? Awoken voters in Madeira refuse to let him hide behind 州权 rhetoric; 别像蒙代尔那样输掉，川普连猪都不如！',
+    'moderate'
+  );
+  assert.deepEqual(innocent2.specialFlags, []);
+
+  const negated = evaluateCustomTweetLocally(
+    '我们坚决反对种族隔离和南方州权借口，绝不重演蒙代尔式的惨败！',
+    'liberal'
+  );
+  assert.deepEqual(negated.specialFlags, []);
 });

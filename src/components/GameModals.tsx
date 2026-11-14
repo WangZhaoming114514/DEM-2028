@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { computeElectoralSummary } from '../game/engine';
 import { ENDING_CATALOG } from '../game/endings';
 import { IDEOLOGIES_BY_ID } from '../game/ideologies';
@@ -59,7 +59,8 @@ export const PauseModal: React.FC<PauseModalProps> = ({
 interface EndingModalProps {
   campaign: CampaignState;
   ending: EndingResult;
-  isNewlyUnlocked: boolean;
+  allTriggeredEndings: EndingResult[];
+  newlyUnlockedIds: string[];
   unlockedCount: number;
   onPlayAgain: () => void;
   onOpenCodex: () => void;
@@ -69,21 +70,26 @@ interface EndingModalProps {
 export const EndingModal: React.FC<EndingModalProps> = ({
   campaign,
   ending,
-  isNewlyUnlocked,
+  allTriggeredEndings,
+  newlyUnlockedIds,
   unlockedCount,
   onPlayAgain,
   onOpenCodex,
   onBackToTitle,
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const endingsList = allTriggeredEndings.length > 0 ? allTriggeredEndings : [ending];
+  const activeEnding = endingsList[activeIndex] ?? ending;
+  const isNewlyUnlocked = newlyUnlockedIds.includes(activeEnding.id);
   const summary = computeElectoralSummary(campaign.margins);
   const finalIdeology = IDEOLOGIES_BY_ID[campaign.ideology];
 
   const headerAccent =
-    ending.theme === 'victory'
+    activeEnding.theme === 'victory'
       ? 'text-blue-400'
-      : ending.theme === 'chaos'
+      : activeEnding.theme === 'chaos'
         ? 'text-amber-400'
-        : ending.theme === 'cursed'
+        : activeEnding.theme === 'cursed'
           ? 'text-rose-400'
           : 'text-red-400';
 
@@ -95,11 +101,39 @@ export const EndingModal: React.FC<EndingModalProps> = ({
       aria-label="2028大选终局裁决"
       data-testid="ending-modal"
     >
-      <div className="w-full max-w-2xl rounded-lg border border-slate-700 bg-[#0F1624] p-6 sm:p-8 space-y-6 my-auto">
+      <div className="w-full max-w-2xl rounded-lg border border-slate-700 bg-[#0F1624] p-6 sm:p-8 space-y-5 my-auto">
+        {endingsList.length > 1 && (
+          <div className="rounded-md border border-amber-700/60 bg-amber-950/25 p-3 space-y-2">
+            <div className="text-xs font-bold text-amber-300">
+              本局同时达成 {endingsList.length} 个结局（已全部解锁并收录至结局档案库）
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {endingsList.map((item, idx) => {
+                const selected = idx === activeIndex;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => setActiveIndex(idx)}
+                    className={`cursor-pointer rounded px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+                      selected
+                        ? 'bg-amber-500 text-slate-950'
+                        : 'border border-slate-700 bg-[#0B101B] text-slate-300 hover:border-amber-400 hover:text-white'
+                    }`}
+                  >
+                    {idx + 1}. {item.badgeLabel}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div className="space-y-2 border-b border-slate-800 pb-4">
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono-num">
             <span className={`font-bold tracking-wider ${headerAccent}`}>
-              {ending.badgeLabel}
+              {activeEnding.badgeLabel}
               {isNewlyUnlocked ? ' · 首次解锁新结局' : ''}
             </span>
             <span className="text-slate-400">
@@ -107,9 +141,9 @@ export const EndingModal: React.FC<EndingModalProps> = ({
             </span>
           </div>
           <h2 className="font-display text-2xl sm:text-3xl font-bold leading-tight text-white">
-            {ending.title}
+            {activeEnding.title}
           </h2>
-          <p className="text-sm font-semibold text-slate-300">{ending.subtitle}</p>
+          <p className="text-sm font-semibold text-slate-300">{activeEnding.subtitle}</p>
         </div>
 
         {/* Electoral & Key States Metrics */}
@@ -128,7 +162,7 @@ export const EndingModal: React.FC<EndingModalProps> = ({
           </div>
         </div>
 
-        <p className="text-sm leading-relaxed text-slate-200">{ending.epilogue}</p>
+        <p className="text-sm leading-relaxed text-slate-200">{activeEnding.epilogue}</p>
 
         {/* Key Battleground Snapshots */}
         <div className="border-t border-slate-800 pt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs font-mono-num text-slate-400">
