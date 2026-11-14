@@ -63,7 +63,15 @@ test('tweet choices dynamically forge player faction and reach victory over 10 r
 });
 
 test('all 6 user-requested hidden endings + Yankee-Red Sox trigger accurately', () => {
-  // 1. KINGFISH HUEY LONG IN LOUISIANA AGAIN?
+  // 1. KINGFISH HUEY LONG IN LOUISIANA AGAIN? (Must strictly win LA > 0)
+  const hueyFail = createInitialCampaign();
+  hueyFail.ideology = 'populist';
+  hueyFail.margins.LA = -0.5;
+  hueyFail.meters.populism = 85;
+  hueyFail.flags.hueyLongUsed = true;
+  hueyFail.finished = true;
+  assert.notEqual(evaluateEnding(hueyFail, 285).id, 'huey_long');
+
   const huey = createInitialCampaign();
   huey.ideology = 'populist';
   huey.margins.LA = 2.4;
@@ -141,10 +149,16 @@ test('all 6 user-requested hidden endings + Yankee-Red Sox trigger accurately', 
   yankee.finished = true;
   assert.equal(evaluateEnding(yankee, 285).id, 'yankee_redsox');
 
-  // 8. Alfalfa Bill (via Oklahoma surge & flag + 10-round preset path)
+  // 8. Alfalfa Bill (Must strictly win OK > 0, verified via unit check + 10-round preset path)
+  const alfalfaFail = createInitialCampaign();
+  alfalfaFail.flags.alfalfaBillUsed = true;
+  alfalfaFail.margins.OK = -1.5;
+  alfalfaFail.finished = true;
+  assert.notEqual(evaluateEnding(alfalfaFail, 280).id, 'alfalfa_bill');
+
   const alfalfa = createInitialCampaign();
   alfalfa.flags.alfalfaBillUsed = true;
-  alfalfa.margins.OK = -6.0;
+  alfalfa.margins.OK = 1.8;
   alfalfa.finished = true;
   assert.equal(evaluateEnding(alfalfa, 280).id, 'alfalfa_bill');
 
@@ -154,6 +168,7 @@ test('all 6 user-requested hidden endings + Yankee-Red Sox trigger accurately', 
     alfalfaRun = applyChoiceTurn(alfalfaRun, ROUND_SCENARIOS[r].choices[choiceIdxPath[r]]);
   }
   assert.equal(alfalfaRun.flags.alfalfaBillUsed, true);
+  assert.ok(alfalfaRun.margins.OK > 0, `Expected OK > 0 on alfalfaRun, got ${alfalfaRun.margins.OK}`);
   assert.equal(resolveCampaignEnding(alfalfaRun).id, 'alfalfa_bill');
 });
 
@@ -232,24 +247,32 @@ test('unconventional and defeat endings trigger under their exact rules', () => 
   assert.equal(evaluateEnding(rustCollapse, 226).id, 'rust_belt_betrayal');
 });
 
-test('custom tweet evaluation rewards Yankee + Red Sox East Coast miracle line and shapes ideology', () => {
+test('custom tweet evaluation and preset choices support multiple SpecialFlag[] entries', () => {
   let campaign = createInitialCampaign();
   const prevNY = campaign.margins.NY;
   const prevMA = campaign.margins.MA;
   const evalResult = evaluateCustomTweetLocally(
-    '民主党万岁！纽约洋基万岁！波士顿红袜万岁！干死那帮废除第22修正案的家伙！',
+    '民主党万岁！纽约洋基万岁！波士顿红袜万岁！学学Alfalfa Bill和休伊朗在路易斯安那与俄克拉荷马掀桌子！干死那帮废除第22修正案的家伙！',
     campaign.ideology
   );
-  campaign = applyCustomTweetTurn(campaign, '民主党万岁！纽约洋基万岁！波士顿红袜万岁！', evalResult);
+  assert.ok(evalResult.specialFlags?.includes('yankee_redsox'));
+  assert.ok(evalResult.specialFlags?.includes('huey_long'));
+  assert.ok(evalResult.specialFlags?.includes('alfalfa_bill'));
+  assert.ok(evalResult.specialFlags?.includes('dark_brandon'));
+  assert.ok((evalResult.stateOverrides?.OK ?? 0) >= 15);
+
+  campaign = applyCustomTweetTurn(campaign, '多旗标手写暴论测试', evalResult);
   assert.ok(campaign.margins.NY > prevNY);
   assert.ok(campaign.margins.MA > prevMA);
   assert.equal(campaign.flags.yankeeRedSoxCount, 1);
+  assert.equal(campaign.flags.hueyLongUsed, true);
+  assert.equal(campaign.flags.alfalfaBillUsed, true);
+  assert.equal(campaign.flags.darkBrandonCount, 1);
   assert.equal(campaign.ideology, 'dark');
 
-  const alfalfaEval = evaluateCustomTweetLocally(
-    '学学Alfalfa Bill！把国民警卫队派去红河油田，给俄克拉荷马发面包、黄油、培根与豆子！',
-    'liberal'
-  );
-  assert.equal(alfalfaEval.specialFlag, 'alfalfa_bill');
-  assert.ok((alfalfaEval.stateOverrides?.OK ?? 0) >= 10);
+  // Verify preset multi-flag array (r10_baseball_chaos carries yankee_redsox + dark_brandon)
+  let presetMulti = createInitialCampaign();
+  presetMulti = applyChoiceTurn(presetMulti, ROUND_SCENARIOS[9].choices[2]);
+  assert.equal(presetMulti.flags.yankeeRedSoxCount, 1);
+  assert.equal(presetMulti.flags.darkBrandonCount, 1);
 });

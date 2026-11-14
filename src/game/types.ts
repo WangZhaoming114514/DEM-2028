@@ -74,7 +74,7 @@ export interface TurnEffects {
   stateOverrides?: Partial<Record<StateCode, number>>;
   meterDelta: Partial<Meters>;
   ideologyDelta: Partial<IdeologyScores>;
-  flag?: SpecialFlag;
+  flags?: SpecialFlag[];
 }
 
 export type SpecialFlag =
@@ -113,23 +113,17 @@ export interface RoundScenario {
   choices: TweetChoice[];
 }
 
-export interface GroundingSource {
-  title: string;
-  uri: string;
-}
-
 export interface FeedItem {
   id: string;
   round: number;
   speakerName: string;
   handle: string;
-  avatar: 'player' | SpeakerId | 'news';
+  avatar: 'player' | SpeakerId;
   isPlayer: boolean;
   text: string;
   likes: string;
   reposts: string;
   metaTag?: string;
-  groundingSources?: GroundingSource[];
 }
 
 export interface CampaignFlags {
@@ -154,7 +148,6 @@ export interface CampaignState {
   feed: FeedItem[];
   finished: boolean;
   customTweetsUsed: number;
-  groundingUsed: number;
 }
 
 export interface ElectoralSummary {
@@ -208,5 +201,5 @@ export interface CustomTweetEval {
   meterDelta: Partial<Meters>;
   ideologyDelta?: Partial<IdeologyScores>;
   stateOverrides?: Partial<Record<StateCode, number>>;
-  specialFlag?: SpecialFlag;
+  specialFlags?: SpecialFlag[];
 }

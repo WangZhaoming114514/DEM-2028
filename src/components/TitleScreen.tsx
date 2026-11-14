@@ -218,7 +218,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
       {/* Bottom single-line control hint */}
       <footer className="relative z-10 px-6 pb-5 pt-2 text-center text-xs text-slate-500">
-        1-4 快捷键选择推文 · Enter 开始选战 · 点击地图各州查看实时民调 · Esc / P 暂停 · 支持手写暴论与热搜检索
+        1-4 快捷键选择推文 · Enter 开始选战 · 点击地图各州查看实时民调 · Esc / P 暂停 · 支持手写暴论
       </footer>
     </div>
   );

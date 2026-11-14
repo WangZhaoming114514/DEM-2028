@@ -69,7 +69,6 @@ export function createInitialCampaign(): CampaignState {
     ],
     finished: false,
     customTweetsUsed: 0,
-    groundingUsed: 0,
   };
 }
 
@@ -80,7 +79,7 @@ function applyDeltaMap(
   stateOverrides?: Partial<Record<StateCode, number>>,
   meterDelta?: Partial<CampaignState['meters']>,
   ideologyDelta?: Partial<IdeologyScores>,
-  flag?: SpecialFlag,
+  flags?: SpecialFlag[],
   synergyMultiplier = 1
 ): {
   nextMargins: Record<StateCode, number>;
@@ -129,13 +128,15 @@ function applyDeltaMap(
   };
 
   const nextFlags = { ...state.flags };
-  if (flag === 'yankee_redsox') nextFlags.yankeeRedSoxCount += 1;
-  if (flag === 'huey_long') nextFlags.hueyLongUsed = true;
-  if (flag === 'dixiecrat') nextFlags.dixiecratUsed = true;
-  if (flag === 'pigasus_selfown') nextFlags.pigasusCount += 1;
-  if (flag === 'dark_brandon') nextFlags.darkBrandonCount += 1;
-  if (flag === 'mondale_defense') nextFlags.mondaleDefense = true;
-  if (flag === 'alfalfa_bill') nextFlags.alfalfaBillUsed = true;
+  for (const flag of flags ?? []) {
+    if (flag === 'yankee_redsox') nextFlags.yankeeRedSoxCount += 1;
+    if (flag === 'huey_long') nextFlags.hueyLongUsed = true;
+    if (flag === 'dixiecrat') nextFlags.dixiecratUsed = true;
+    if (flag === 'pigasus_selfown') nextFlags.pigasusCount += 1;
+    if (flag === 'dark_brandon') nextFlags.darkBrandonCount += 1;
+    if (flag === 'mondale_defense') nextFlags.mondaleDefense = true;
+    if (flag === 'alfalfa_bill') nextFlags.alfalfaBillUsed = true;
+  }
 
   return { nextMargins, nextMeters, nextFlags, nextScores, nextIdeology };
 }
@@ -153,7 +154,7 @@ export function applyChoiceTurn(state: CampaignState, choice: TweetChoice): Camp
     choice.effects.stateOverrides,
     choice.effects.meterDelta,
     choice.effects.ideologyDelta,
-    choice.effects.flag,
+    choice.effects.flags,
     synergyMult
   );
 
@@ -240,7 +241,7 @@ export function applyCustomTweetTurn(
     evalResult.stateOverrides,
     evalResult.meterDelta,
     evalResult.ideologyDelta,
-    evalResult.specialFlag,
+    evalResult.specialFlags,
     1.05
   );
 
@@ -337,15 +338,24 @@ export function evaluateCustomTweetLocally(text: string, currentIdeology: Ideolo
   const hasProfanityPunch =
     text.includes('他妈') || text.includes('干死') || text.includes('滚蛋') || lower.includes('fuck') || lower.includes('shit');
 
+  const hasDixie = text.includes('州权') || text.includes('瑟蒙德') || lower.includes('dixiecrat') || text.includes('深南');
+  const hasPigasus = lower.includes('pigasus') || text.includes('芝加哥小猪') || text.includes('猪都比');
+  const hasMondale = text.includes('蒙代尔') || lower.includes('mondale');
+
   const stateOverrides: Partial<Record<StateCode, number>> = {};
-  let specialFlag: SpecialFlag | undefined;
+  const specialFlags: SpecialFlag[] = [];
+  const addFlag = (flag: SpecialFlag) => {
+    if (!specialFlags.includes(flag)) {
+      specialFlags.push(flag);
+    }
+  };
   let nationalShift = 0.7;
 
   if (hasYankee && hasRedSox) {
     stateOverrides.NY = 4.5;
     stateOverrides.MA = 4.5;
     stateOverrides.NH = 2.0;
-    specialFlag = 'yankee_redsox';
+    addFlag('yankee_redsox');
     nationalShift += 0.6;
   } else if (hasYankee) {
     stateOverrides.NY = 3.5;
@@ -356,13 +366,29 @@ export function evaluateCustomTweetLocally(text: string, currentIdeology: Ideolo
   }
 
   if (hasHuey) {
-    stateOverrides.LA = 6.5;
-    specialFlag = 'huey_long';
+    stateOverrides.LA = 8.0;
+    addFlag('huey_long');
   }
   if (hasAlfalfa) {
-    stateOverrides.OK = 14.0;
+    stateOverrides.OK = 16.0;
     stateOverrides.KS = 4.0;
-    specialFlag = 'alfalfa_bill';
+    addFlag('alfalfa_bill');
+  }
+  if (hasDixie) {
+    stateOverrides.AL = 5.0;
+    stateOverrides.MS = 5.0;
+    stateOverrides.SC = 4.5;
+    addFlag('dixiecrat');
+  }
+  if (hasPigasus) {
+    stateOverrides.IL = -5.5;
+    nationalShift -= 2.8;
+    addFlag('pigasus_selfown');
+  }
+  if (hasMondale) {
+    stateOverrides.MN = 3.5;
+    nationalShift -= 3.2;
+    addFlag('mondale_defense');
   }
   if (hasTexas) {
     stateOverrides.TX = 5.0;
@@ -370,7 +396,10 @@ export function evaluateCustomTweetLocally(text: string, currentIdeology: Ideolo
   if (hasDem) nationalShift += 0.4;
   if (has1600) nationalShift += 0.5;
   if (hasTrumpVanceRubio) nationalShift += 0.5;
-  if (hasProfanityPunch) nationalShift += 0.4;
+  if (hasProfanityPunch) {
+    nationalShift += 0.4;
+    addFlag('dark_brandon');
+  }
 
   const ideologyDelta: Partial<IdeologyScores> = {};
   if (hasProfanityPunch || currentIdeology === 'dark') ideologyDelta.dark = 3;
@@ -378,7 +407,7 @@ export function evaluateCustomTweetLocally(text: string, currentIdeology: Ideolo
   else if (hasAlfalfa) {
     ideologyDelta.conservative = 2;
     ideologyDelta.populist = 2;
-  } else if (hasConservative) ideologyDelta.conservative = 3;
+  } else if (hasConservative || hasDixie) ideologyDelta.conservative = 3;
   else if (hasHuey || hasPopulist) ideologyDelta.populist = 3;
   else ideologyDelta.liberal = 2;
 
@@ -394,7 +423,7 @@ export function evaluateCustomTweetLocally(text: string, currentIdeology: Ideolo
       suburban: hasProfanityPunch ? 0.4 : 1.4,
       progressiveYouth: hasWoke ? 2.6 : 1.6,
       sunBeltDiverse: hasTexas ? 2.2 : 1.1,
-      southernPopulist: hasHuey || hasConservative ? 3.5 : 0.4,
+      southernPopulist: hasHuey || hasConservative || hasDixie ? 3.8 : 0.4,
       moderateHeartland: hasProfanityPunch ? -0.3 : 1.2,
     },
     meterDelta: {
@@ -404,7 +433,7 @@ export function evaluateCustomTweetLocally(text: string, currentIdeology: Ideolo
     },
     ideologyDelta,
     stateOverrides,
-    specialFlag,
+    specialFlags,
   };
 }
 

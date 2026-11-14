@@ -18,7 +18,7 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
       '全美民调机构连夜召开紧急记者会——路易斯安那州在2028年竟然翻蓝了！你在密西西比河两岸掀起的“均分财富”民粹狂潮让红脖子农夫与新奥尔良码头工人同时站到了同一面旗帜下。休伊·朗在1935年没来得及走完的路，被你用十条推特在2028年强行接通了高压电。',
     badgeLabel: 'HIDDEN ENDING · KINGFISH',
     theme: 'chaos',
-    hint: '线索：在推特战场狂飙民粹话术，并在开票夜赢下路易斯安那州（LA）。',
+    hint: '线索：在推特战场狂飙民粹话术，并在开票夜必须真正赢下路易斯安那州（LA > 0）。',
   },
   {
     id: 'dixiecrat',
@@ -102,7 +102,7 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
       '全美政治观察家集体揉碎了眼镜：俄克拉荷马的红河岸边竟然掀起了1931年威廉·默里（“Alfalfa Bill”）式的狂野草原民粹风暴！你左手塞满洋葱和苏打饼干、右手下令国民警卫队封锁寡头油井，靠着“面包、黄油、培根与豆子”的硬核口号把华尔街银行家和海湖庄园同时吓出了偏头痛。',
     badgeLabel: 'HIDDEN ENDING · ALFALFA BILL',
     theme: 'chaos',
-    hint: '线索：第8回合高喊“面包、黄油、培根与豆子”，并配合能源/民粹路线大幅拉升俄克拉荷马（OK）选情。',
+    hint: '线索：第8回合高喊“面包、黄油、培根与豆子”并配合草原/民粹路线，在开票夜必须真正赢下俄克拉荷马州（OK > 0）。',
   },
   {
     id: 'segregation_now',
@@ -314,10 +314,13 @@ export function evaluateEnding(
     return ENDINGS_BY_ID.segregation_now;
   }
 
-  // 6. ALFALFA BILL (Oklahoma agrarian-oilfield populist resurgence)
+  // 6. ALFALFA BILL (Oklahoma agrarian-oilfield populist resurgence — MUST strictly win OK)
   if (
-    m.OK > 0 ||
-    (state.flags.alfalfaBillUsed && m.OK > -12)
+    m.OK > 0 &&
+    (state.flags.alfalfaBillUsed ||
+      state.ideology === 'populist' ||
+      state.ideology === 'conservative' ||
+      state.meters.populism >= 55)
   ) {
     return {
       ...ENDINGS_BY_ID.alfalfa_bill,

@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
 import { IDEOLOGIES_BY_ID } from '../game/ideologies';
 import { ROUND_SCENARIOS } from '../game/scenarios';
-import { CampaignState, FeedItem, GroundingSource, SpeakerId, TweetChoice } from '../game/types';
+import { CampaignState, FeedItem, SpeakerId, TweetChoice } from '../game/types';
 
 interface TwitterArenaProps {
   campaign: CampaignState;
-  liveBreakingNews: string | null;
-  liveGroundingSources: GroundingSource[];
-  groundingLoading: boolean;
-  groundingError: string | null;
-  customLoading: boolean;
-  customNotice: string | null;
-  onFetchGrounding: () => void;
   onSelectChoice: (choice: TweetChoice) => void;
   onSubmitCustomTweet: (text: string) => void;
 }
@@ -39,13 +32,6 @@ const AvatarBadge: React.FC<{ avatar: FeedItem['avatar'] }> = ({ avatar }) => {
       </div>
     );
   }
-  if (avatar === 'news') {
-    return (
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-600 text-xs font-bold text-white">
-        LIVE
-      </div>
-    );
-  }
   const meta = AVATAR_MAP[avatar];
   return (
     <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-slate-700 bg-slate-800">
@@ -61,13 +47,6 @@ const AvatarBadge: React.FC<{ avatar: FeedItem['avatar'] }> = ({ avatar }) => {
 
 export const TwitterArena: React.FC<TwitterArenaProps> = ({
   campaign,
-  liveBreakingNews,
-  liveGroundingSources,
-  groundingLoading,
-  groundingError,
-  customLoading,
-  customNotice,
-  onFetchGrounding,
   onSelectChoice,
   onSubmitCustomTweet,
 }) => {
@@ -78,55 +57,27 @@ export const TwitterArena: React.FC<TwitterArenaProps> = ({
   const handleCustomSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = customInput.trim();
-    if (!trimmed || customLoading || campaign.finished) return;
+    if (!trimmed || campaign.finished) return;
     onSubmitCustomTweet(trimmed);
     setCustomInput('');
   };
 
   return (
     <aside className="flex h-full flex-col gap-2.5">
-      {/* Breaking News + Google Search Grounding Bar */}
+      {/* Round Topic & Breaking News Banner */}
       <div className="rounded-lg border border-slate-800 bg-[#111827] p-3 space-y-1.5">
         <div className="flex items-center justify-between gap-2">
           <span className="text-xs font-bold tracking-wide text-amber-400">
             第 {Math.min(campaign.round, 10)} 回合议题 · {scenario.topic}
           </span>
-          <button
-            type="button"
-            disabled={groundingLoading || campaign.finished}
-            onClick={onFetchGrounding}
-            className="cursor-pointer rounded border border-slate-700 bg-[#182235] px-2.5 py-1 text-xs font-medium text-blue-300 transition-colors hover:border-blue-500 hover:text-white disabled:opacity-50 whitespace-nowrap shrink-0"
-          >
-            {groundingLoading ? '检索真实热搜中...' : '注入现实热搜情报'}
-          </button>
+          <span className="font-mono-num text-[11px] text-slate-400 shrink-0">
+            {scenario.dateLabel}
+          </span>
         </div>
 
         <p className="text-xs leading-relaxed text-slate-300">
-          {liveBreakingNews ?? scenario.breakingNews}
+          {scenario.breakingNews}
         </p>
-
-        {groundingError && (
-          <p className="text-xs text-rose-400">{groundingError}</p>
-        )}
-
-        {liveGroundingSources.length > 0 && (
-          <div className="border-t border-slate-800 pt-1.5 text-[11px] text-slate-400 space-y-1">
-            <span className="font-semibold text-slate-300">Google Search 现实来源：</span>
-            <div className="flex flex-wrap gap-x-3 gap-y-1">
-              {liveGroundingSources.map((src, idx) => (
-                <a
-                  key={`${src.uri}-${idx}`}
-                  href={src.uri}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-blue-400 underline-offset-2 hover:underline truncate max-w-[210px]"
-                >
-                  {src.title}
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Live X / Twitter Timeline Feed (Current Opponent Attack at Top) */}
@@ -143,9 +94,7 @@ export const TwitterArena: React.FC<TwitterArenaProps> = ({
               className={`rounded-md border p-2.5 text-xs ${
                 item.isPlayer
                   ? 'border-blue-800/70 bg-blue-950/25'
-                  : item.avatar === 'news'
-                    ? 'border-amber-700/60 bg-amber-950/20'
-                    : 'border-slate-800 bg-[#0D1320]'
+                  : 'border-slate-800 bg-[#0D1320]'
               }`}
             >
               <div className="flex items-start gap-2.5">
@@ -192,7 +141,7 @@ export const TwitterArena: React.FC<TwitterArenaProps> = ({
               <button
                 key={choice.id}
                 type="button"
-                disabled={campaign.finished || customLoading}
+                disabled={campaign.finished}
                 onClick={() => onSelectChoice(choice)}
                 className="cursor-pointer group rounded-md border border-slate-800 bg-[#0D1320] p-2.5 text-left transition-all duration-150 hover:border-blue-500 hover:bg-[#131C2E] disabled:opacity-50"
               >
@@ -219,7 +168,7 @@ export const TwitterArena: React.FC<TwitterArenaProps> = ({
         {/* Custom Free-Text Tweet Box */}
         <form onSubmit={handleCustomSubmit} className="border-t border-slate-800 pt-2 space-y-1.5">
           <label htmlFor="custom-tweet-input" className="block text-xs font-semibold text-slate-300">
-            手写暴论（由 Gemini 实时判定全国与各州波动）
+            手写暴论（本地词库即时判定全国与各州波动）
           </label>
           <div className="flex gap-2">
             <input
@@ -227,20 +176,19 @@ export const TwitterArena: React.FC<TwitterArenaProps> = ({
               type="text"
               maxLength={220}
               value={customInput}
-              disabled={campaign.finished || customLoading}
+              disabled={campaign.finished}
               onChange={(e) => setCustomInput(e.target.value)}
               placeholder="例如：民主党万岁！纽约洋基万岁！波士顿红袜万岁！"
               className="flex-1 rounded border border-slate-700 bg-[#0A0F1A] px-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
             />
             <button
               type="submit"
-              disabled={!customInput.trim() || campaign.finished || customLoading}
+              disabled={!customInput.trim() || campaign.finished}
               className="cursor-pointer rounded bg-blue-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-blue-500 disabled:opacity-40 whitespace-nowrap shrink-0"
             >
-              {customLoading ? '判定中...' : '发送暴论'}
+              发送暴论
             </button>
           </div>
-          {customNotice && <p className="text-[11px] text-amber-400">{customNotice}</p>}
         </form>
       </div>
     </aside>

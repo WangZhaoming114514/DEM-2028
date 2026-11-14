@@ -21,9 +21,6 @@ import {
 import { ROUND_SCENARIOS } from './game/scenarios';
 import {
   CampaignState,
-  CustomTweetEval,
-  GroundingSource,
-  SpeakerId,
   StateCode,
   TweetChoice,
   UnlockedEndingRecord,
@@ -53,16 +50,6 @@ export default function App() {
   );
   const [isNewlyUnlocked, setIsNewlyUnlocked] = useState(false);
   const [codexOpen, setCodexOpen] = useState(false);
-
-  // Live Google Search Grounding state
-  const [liveBreakingNews, setLiveBreakingNews] = useState<string | null>(null);
-  const [liveGroundingSources, setLiveGroundingSources] = useState<GroundingSource[]>([]);
-  const [groundingLoading, setGroundingLoading] = useState(false);
-  const [groundingError, setGroundingError] = useState<string | null>(null);
-
-  // Custom tweet evaluation state
-  const [customLoading, setCustomLoading] = useState(false);
-  const [customNotice, setCustomNotice] = useState<string | null>(null);
 
   useEffect(() => {
     document.body.dataset.state = phase;
@@ -107,10 +94,6 @@ export default function App() {
     setSelectedState('PA');
     setIsNewlyUnlocked(false);
     setCodexOpen(false);
-    setLiveBreakingNews(null);
-    setLiveGroundingSources([]);
-    setGroundingError(null);
-    setCustomNotice(null);
     setPhase('playing');
   }, []);
 
@@ -124,13 +107,9 @@ export default function App() {
 
   const handleSelectChoice = useCallback(
     (choice: TweetChoice) => {
-      if (phase !== 'playing' || campaign.finished || customLoading || codexOpen) return;
+      if (phase !== 'playing' || campaign.finished || codexOpen) return;
       const nextCampaign = applyChoiceTurn(campaign, choice);
       setCampaign(nextCampaign);
-      setLiveBreakingNews(null);
-      setLiveGroundingSources([]);
-      setGroundingError(null);
-      setCustomNotice(null);
 
       if (nextCampaign.finished) {
         finalizeCampaign(nextCampaign);
@@ -140,139 +119,15 @@ export default function App() {
         soundEngine.playTweetSend();
       }
     },
-    [phase, campaign, customLoading, codexOpen, finalizeCampaign]
+    [phase, campaign, codexOpen, finalizeCampaign]
   );
 
-  const handleFetchGrounding = useCallback(async () => {
-    if (groundingLoading || campaign.finished) return;
-    setGroundingLoading(true);
-    setGroundingError(null);
-    soundEngine.playBreakingNews();
-
-    const scenario = ROUND_SCENARIOS[Math.min(campaign.round - 1, ROUND_SCENARIOS.length - 1)];
-
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 8000);
-
-    try {
-      const resp = await fetch('/api/grounding-tweet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          round: campaign.round,
-          topic: scenario.topic,
-          dateLabel: scenario.dateLabel,
-        }),
-      });
-      const data = (await resp.json()) as {
-        error?: string;
-        realEventSummary?: string;
-        breakingNews?: string;
-        speaker?: SpeakerId;
-        tweet?: string;
-        groundingSources?: GroundingSource[];
-      };
-
-      if (!resp.ok || data.error) {
-        setGroundingError(data.error ?? '未能连接 Google Search 实时情报。');
-        return;
-      }
-
-      if (data.breakingNews) {
-        setLiveBreakingNews(data.breakingNews);
-      }
-      setLiveGroundingSources(data.groundingSources ?? []);
-
-      if (data.tweet) {
-        const speaker = data.speaker ?? 'trump';
-        const speakerMeta = {
-          trump: { name: 'Donald J. Trump', handle: '@realDonaldTrump' },
-          vance: { name: 'JD Vance', handle: '@JDVance' },
-          rubio: { name: 'Marco Rubio', handle: '@marcorubio' },
-        }[speaker];
-
-        setCampaign((prev) => ({
-          ...prev,
-          groundingUsed: prev.groundingUsed + 1,
-          feed: [
-            {
-              id: `grounding-r${prev.round}-${Date.now()}`,
-              round: prev.round,
-              speakerName: speakerMeta.name,
-              handle: speakerMeta.handle,
-              avatar: speaker,
-              isPlayer: false,
-              text: data.tweet!,
-              likes: '57.3万',
-              reposts: '18.9万',
-              metaTag: '现实热搜实时连线',
-              groundingSources: data.groundingSources,
-            },
-            ...prev.feed,
-          ],
-        }));
-      }
-    } catch (err) {
-      const msg =
-        err instanceof Error && err.name === 'AbortError'
-          ? '实时检索超时，可继续直接进行当前回合对战。'
-          : err instanceof Error
-            ? err.message
-            : '网络请求异常';
-      setGroundingError(msg);
-    } finally {
-      window.clearTimeout(timer);
-      setGroundingLoading(false);
-    }
-  }, [groundingLoading, campaign.finished, campaign.round]);
-
   const handleSubmitCustomTweet = useCallback(
-    async (text: string) => {
-      if (phase !== 'playing' || campaign.finished || customLoading || codexOpen) return;
-      setCustomLoading(true);
-      setCustomNotice(null);
-
-      const scenario = ROUND_SCENARIOS[Math.min(campaign.round - 1, ROUND_SCENARIOS.length - 1)];
-      let evalResult: CustomTweetEval | null = null;
-
-      const controller = new AbortController();
-      const timer = window.setTimeout(() => controller.abort(), 7000);
-
-      try {
-        const resp = await fetch('/api/judge-tweet', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          body: JSON.stringify({
-            playerTweet: text,
-            ideology: campaign.ideology,
-            round: campaign.round,
-            opponentTweet: scenario.opponentTweet,
-            topic: scenario.topic,
-          }),
-        });
-        const data = (await resp.json()) as CustomTweetEval & { error?: string };
-        if (resp.ok && !data.error && typeof data.nationalShift === 'number') {
-          evalResult = data;
-        } else {
-          setCustomNotice(data.error ?? '使用本地暴论裁判引擎完成结算。');
-        }
-      } catch {
-        setCustomNotice('AI 服务繁忙，已使用本地暴论裁判引擎完成即时结算。');
-      } finally {
-        window.clearTimeout(timer);
-      }
-
-      if (!evalResult) {
-        evalResult = evaluateCustomTweetLocally(text, campaign.ideology);
-      }
-
+    (text: string) => {
+      if (phase !== 'playing' || campaign.finished || codexOpen) return;
+      const evalResult = evaluateCustomTweetLocally(text, campaign.ideology);
       const nextCampaign = applyCustomTweetTurn(campaign, text, evalResult);
       setCampaign(nextCampaign);
-      setLiveBreakingNews(null);
-      setLiveGroundingSources([]);
-      setCustomLoading(false);
 
       if (nextCampaign.finished) {
         finalizeCampaign(nextCampaign);
@@ -282,7 +137,7 @@ export default function App() {
         soundEngine.playTweetSend();
       }
     },
-    [phase, campaign, customLoading, codexOpen, finalizeCampaign]
+    [phase, campaign, codexOpen, finalizeCampaign]
   );
 
   // Global keyboard shortcuts matching Game Shell contract
@@ -422,13 +277,6 @@ export default function App() {
           <div className="lg:col-span-5">
             <TwitterArena
               campaign={campaign}
-              liveBreakingNews={liveBreakingNews}
-              liveGroundingSources={liveGroundingSources}
-              groundingLoading={groundingLoading}
-              groundingError={groundingError}
-              customLoading={customLoading}
-              customNotice={customNotice}
-              onFetchGrounding={handleFetchGrounding}
               onSelectChoice={handleSelectChoice}
               onSubmitCustomTweet={handleSubmitCustomTweet}
             />
