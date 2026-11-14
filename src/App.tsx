@@ -7,10 +7,8 @@ import { TitleScreen } from './components/TitleScreen';
 import { TwitterArena } from './components/TwitterArena';
 import {
   applyChoiceTurn,
-  applyCustomTweetTurn,
   computeElectoralSummary,
   createInitialCampaign,
-  evaluateCustomTweetLocally,
   resolveCampaignEndings,
 } from './game/engine';
 import {
@@ -117,24 +115,6 @@ export default function App() {
       if (nextCampaign.finished) {
         finalizeCampaign(nextCampaign);
       } else if (choice.effects.nationalShift >= 1.5) {
-        soundEngine.playViralHit();
-      } else {
-        soundEngine.playTweetSend();
-      }
-    },
-    [phase, campaign, codexOpen, finalizeCampaign]
-  );
-
-  const handleSubmitCustomTweet = useCallback(
-    (text: string) => {
-      if (phase !== 'playing' || campaign.finished || codexOpen) return;
-      const evalResult = evaluateCustomTweetLocally(text, campaign.ideology);
-      const nextCampaign = applyCustomTweetTurn(campaign, text, evalResult);
-      setCampaign(nextCampaign);
-
-      if (nextCampaign.finished) {
-        finalizeCampaign(nextCampaign);
-      } else if (evalResult.nationalShift >= 1.2) {
         soundEngine.playViralHit();
       } else {
         soundEngine.playTweetSend();
@@ -281,7 +261,6 @@ export default function App() {
             <TwitterArena
               campaign={campaign}
               onSelectChoice={handleSelectChoice}
-              onSubmitCustomTweet={handleSubmitCustomTweet}
             />
           </div>
         </div>

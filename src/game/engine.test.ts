@@ -2,10 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   applyChoiceTurn,
-  applyCustomTweetTurn,
   computeElectoralSummary,
   createInitialCampaign,
-  evaluateCustomTweetLocally,
   resolveCampaignEnding,
   resolveCampaignEndings,
 } from './engine';
@@ -261,34 +259,18 @@ test('unconventional and defeat endings trigger under their exact rules', () => 
   assert.equal(evaluateEnding(rustCollapse, 226).id, 'rust_belt_betrayal');
 });
 
-test('custom tweet evaluation and preset choices support multiple SpecialFlag[] entries', () => {
-  let campaign = createInitialCampaign();
-  const prevNY = campaign.margins.NY;
-  const prevMA = campaign.margins.MA;
-  const evalResult = evaluateCustomTweetLocally(
-    '民主党万岁！纽约洋基万岁！波士顿红袜万岁！学学Alfalfa Bill和休伊朗在路易斯安那与俄克拉荷马掀桌子！干死那帮废除第22修正案的家伙！',
-    campaign.ideology
-  );
-  assert.ok(evalResult.specialFlags?.includes('yankee_redsox'));
-  assert.ok(evalResult.specialFlags?.includes('huey_long'));
-  assert.ok(evalResult.specialFlags?.includes('alfalfa_bill'));
-  assert.ok(evalResult.specialFlags?.includes('dark_brandon'));
-  assert.ok((evalResult.stateOverrides?.OK ?? 0) >= 15);
-
-  campaign = applyCustomTweetTurn(campaign, '多旗标手写暴论测试', evalResult);
-  assert.ok(campaign.margins.NY > prevNY);
-  assert.ok(campaign.margins.MA > prevMA);
-  assert.equal(campaign.flags.yankeeRedSoxCount, 1);
-  assert.equal(campaign.flags.hueyLongUsed, true);
-  assert.equal(campaign.flags.alfalfaBillUsed, true);
-  assert.equal(campaign.flags.darkBrandonCount, 1);
-  assert.equal(campaign.ideology, 'dark');
-
-  // Verify preset multi-flag array (r10_baseball_chaos carries yankee_redsox + dark_brandon)
+test('preset choices support multiple SpecialFlag[] entries', () => {
+  // r10_baseball_chaos carries yankee_redsox + dark_brandon
   let presetMulti = createInitialCampaign();
   presetMulti = applyChoiceTurn(presetMulti, ROUND_SCENARIOS[9].choices[2]);
   assert.equal(presetMulti.flags.yankeeRedSoxCount, 1);
   assert.equal(presetMulti.flags.darkBrandonCount, 1);
+
+  // r9_dixie_last carries dixiecrat + huey_long
+  let dixieMulti = createInitialCampaign();
+  dixieMulti = applyChoiceTurn(dixieMulti, ROUND_SCENARIOS[8].choices[3]);
+  assert.equal(dixieMulti.flags.dixiecratUsed, true);
+  assert.equal(dixieMulti.flags.hueyLongUsed, true);
 });
 
 test('multi-ending resolution unlocks concurrent endings without masking specific achievements', () => {
@@ -313,25 +295,4 @@ test('multi-ending resolution unlocks concurrent endings without masking specifi
   assert.equal(dualRes.primary.id, 'alfalfa_bill');
   assert.ok(dualRes.allTriggered.some((e) => e.id === 'alfalfa_bill'));
   assert.ok(dualRes.allTriggered.some((e) => e.id === 'huey_long'));
-});
-
-test('custom tweet keyword evaluation avoids substring and negation false triggers', () => {
-  const innocent1 = evaluateCustomTweetLocally(
-    '我们要促进经济多元化发展，看看红河谷风光，记住他妈妈当年在汽车厂干过三十年！',
-    'liberal'
-  );
-  assert.deepEqual(innocent1.specialFlags, []);
-  assert.equal(innocent1.ideologyDelta?.woke, undefined);
-
-  const innocent2 = evaluateCustomTweetLocally(
-    'Trump deity? Awoken voters in Madeira refuse to let him hide behind 州权 rhetoric; 别像蒙代尔那样输掉，川普连猪都不如！',
-    'moderate'
-  );
-  assert.deepEqual(innocent2.specialFlags, []);
-
-  const negated = evaluateCustomTweetLocally(
-    '我们坚决反对种族隔离和南方州权借口，绝不重演蒙代尔式的惨败！',
-    'liberal'
-  );
-  assert.deepEqual(negated.specialFlags, []);
 });

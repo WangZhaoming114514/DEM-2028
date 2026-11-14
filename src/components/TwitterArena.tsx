@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IDEOLOGIES_BY_ID } from '../game/ideologies';
 import { ROUND_SCENARIOS } from '../game/scenarios';
 import { CampaignState, FeedItem, SpeakerId, TweetChoice } from '../game/types';
@@ -6,7 +6,6 @@ import { CampaignState, FeedItem, SpeakerId, TweetChoice } from '../game/types';
 interface TwitterArenaProps {
   campaign: CampaignState;
   onSelectChoice: (choice: TweetChoice) => void;
-  onSubmitCustomTweet: (text: string) => void;
 }
 
 const AVATAR_MAP: Record<SpeakerId, { src: string; alt: string }> = {
@@ -48,19 +47,9 @@ const AvatarBadge: React.FC<{ avatar: FeedItem['avatar'] }> = ({ avatar }) => {
 export const TwitterArena: React.FC<TwitterArenaProps> = ({
   campaign,
   onSelectChoice,
-  onSubmitCustomTweet,
 }) => {
-  const [customInput, setCustomInput] = useState('');
   const scenario = ROUND_SCENARIOS[Math.min(campaign.round - 1, ROUND_SCENARIOS.length - 1)];
   const ideology = IDEOLOGIES_BY_ID[campaign.ideology];
-
-  const handleCustomSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = customInput.trim();
-    if (!trimmed || campaign.finished) return;
-    onSubmitCustomTweet(trimmed);
-    setCustomInput('');
-  };
 
   return (
     <aside className="flex h-full flex-col gap-2.5">
@@ -164,32 +153,6 @@ export const TwitterArena: React.FC<TwitterArenaProps> = ({
             );
           })}
         </div>
-
-        {/* Custom Free-Text Tweet Box */}
-        <form onSubmit={handleCustomSubmit} className="border-t border-slate-800 pt-2 space-y-1.5">
-          <label htmlFor="custom-tweet-input" className="block text-xs font-semibold text-slate-300">
-            手写暴论（本地词库即时判定全国与各州波动）
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="custom-tweet-input"
-              type="text"
-              maxLength={220}
-              value={customInput}
-              disabled={campaign.finished}
-              onChange={(e) => setCustomInput(e.target.value)}
-              placeholder="例如：民主党万岁！纽约洋基万岁！波士顿红袜万岁！"
-              className="flex-1 rounded border border-slate-700 bg-[#0A0F1A] px-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
-            />
-            <button
-              type="submit"
-              disabled={!customInput.trim() || campaign.finished}
-              className="cursor-pointer rounded bg-blue-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-blue-500 disabled:opacity-40 whitespace-nowrap shrink-0"
-            >
-              发送暴论
-            </button>
-          </div>
-        </form>
       </div>
     </aside>
   );

@@ -116,7 +116,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
                 </span>
               </div>
               <p className="text-xs leading-relaxed text-slate-300">
-                开局不预设任何标签。你的每一条预设推文或手写暴论都会在七大派系中累积声望，并把全美选民版图拉向完全不同的终局：从横扫435票的“FDR IN 2028”、令华盛顿失语的“Dixiecrat”大反转，到连芝加哥小猪都不如的历史级惨败。
+                开局不预设任何标签。你的每一条推文选择都会在七大派系中累积声望，并把全美选民版图拉向完全不同的终局：从横扫435票的“FDR IN 2028”、令华盛顿失语的“Dixiecrat”大反转，到连芝加哥小猪都不如的历史级惨败。
               </p>
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-400 pt-1">
                 {IDEOLOGIES.map((item, idx) => (
@@ -218,7 +218,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
       {/* Bottom single-line control hint */}
       <footer className="relative z-10 px-6 pb-5 pt-2 text-center text-xs text-slate-500">
-        1-4 快捷键选择推文 · Enter 开始选战 · 点击地图各州查看实时民调 · Esc / P 暂停 · 支持手写暴论
+        1-4 快捷键选择推文 · Enter 开始选战 · 点击地图各州查看实时民调 · Esc / P 暂停
       </footer>
     </div>
   );

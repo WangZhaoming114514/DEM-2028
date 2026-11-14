@@ -147,7 +147,6 @@ export interface CampaignState {
   flags: CampaignFlags;
   feed: FeedItem[];
   finished: boolean;
-  customTweetsUsed: number;
 }
 
 export interface ElectoralSummary {
@@ -190,16 +189,4 @@ export interface UnlockedEndingRecord {
   unlockedAt: string;
   bestDemEV: number;
   count: number;
-}
-
-export interface CustomTweetEval {
-  critique: string;
-  opponentSpeaker: SpeakerId;
-  opponentReply: string;
-  nationalShift: number;
-  demographics: Partial<DemographicWeights>;
-  meterDelta: Partial<Meters>;
-  ideologyDelta?: Partial<IdeologyScores>;
-  stateOverrides?: Partial<Record<StateCode, number>>;
-  specialFlags?: SpecialFlag[];
 }
