@@ -19,7 +19,8 @@ function clamp(val: number, min: number, max: number): number {
 }
 
 function round1(val: number): number {
-  return Math.round(val * 10) / 10;
+  const rounded = Math.round(val * 10) / 10;
+  return rounded === 0 ? 0 : rounded;
 }
 
 /**

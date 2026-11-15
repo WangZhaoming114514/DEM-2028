@@ -290,12 +290,12 @@ export const ROUND_SCENARIOS: RoundScenario[] = [
         label: '百年奇迹：同时高呼洋基万岁与红袜万岁',
         tweetText:
           '听好了你这只橘色高尔夫球童：民主党万岁！纽约洋基万岁！波士顿红袜万岁！不管布朗克斯还是芬威球场，今晚东海岸从哈德逊河到查尔斯河全部站到一起，把你轰出本垒打墙外！',
-        strategyHint: '东海岸NY/MA/CT/NH狂飙 · 解锁MLB停火伏笔',
+        strategyHint: '东海岸NY/MA/CT/NH狂飙 · 费城(PA)与芝加哥(IL)球场怨念掉血 · 解锁MLB停火伏笔',
         primaryIdeology: 'liberal',
         effects: {
           nationalShift: 1.6,
           demographics: { progressiveYouth: 1.8, workingClass: 1.6, suburban: 1.4 },
-          stateOverrides: { NY: 5.5, MA: 5.5, CT: 4.0, NH: 3.5, NJ: 3.0, PA: 1.2 },
+          stateOverrides: { NY: 5.5, MA: 5.5, CT: 4.0, NH: 3.5, NJ: 3.0, PA: -3.2, IL: -6.2 },
           meterDelta: { hype: 18, chaos: 10, populism: 8 },
           ideologyDelta: { liberal: 2, populist: 1, dark: 1 },
           flags: ['yankee_redsox'],
@@ -620,12 +620,12 @@ export const ROUND_SCENARIOS: RoundScenario[] = [
         label: '深夜脱口秀连线：再次点名洋基与红袜',
         tweetText:
           '算法限流？今晚我在纽约和波士顿深夜脱口秀现场连线全美：民主党万岁！纽约洋基万岁！波士顿红袜万岁！顺便提醒@marcorubio 录制前记得自备一箱波兰泉矿泉水！',
-        strategyHint: '自由派+ · 东海岸再暴涨 · 巩固MLB奇迹线',
+        strategyHint: '自由派+ · 东海岸再暴涨 · 费城PA与芝加哥IL持续掉票 · 巩固MLB奇迹线',
         primaryIdeology: 'liberal',
         effects: {
           nationalShift: 1.1,
           demographics: { suburban: 1.4, progressiveYouth: 1.6, workingClass: 1.0 },
-          stateOverrides: { NY: 4.5, MA: 4.5, PA: 1.4, FL: 2.0 },
+          stateOverrides: { NY: 4.5, MA: 4.5, PA: -3.2, IL: -6.2, FL: 2.0 },
           meterDelta: { hype: 14, chaos: 8 },
           ideologyDelta: { liberal: 2, dark: 1 },
           flags: ['yankee_redsox'],
@@ -873,12 +873,12 @@ export const ROUND_SCENARIOS: RoundScenario[] = [
         label: '狂野绝唱：洋基红袜+骂穿白宫地毯',
         tweetText:
           '最后说一遍：击碎极权妄想！民主党万岁！纽约洋基万岁！波士顿红袜万岁！明天谁敢把票投给唐纳德和万斯，我就祝他家电视直播永远卡在第九局下半两出局满垒！宾夕法尼亚大道1600号我来了！',
-        strategyHint: '黑化+ · 东海岸飙升 · 触发MLB停火奇迹线',
+        strategyHint: '黑化+ · 东海岸飙升 · PA与IL棒球迷抗议失血 · 触发MLB停火奇迹线',
         primaryIdeology: 'dark',
         effects: {
           nationalShift: 1.9,
           demographics: { progressiveYouth: 3.0, workingClass: 1.8, sunBeltDiverse: 1.8, suburban: 0.8 },
-          stateOverrides: { NY: 4.5, MA: 4.5, PA: 2.2, NH: 2.5 },
+          stateOverrides: { NY: 4.5, MA: 4.5, PA: -2.8, IL: -5.4, NH: 2.5 },
           meterDelta: { hype: 25, chaos: 20 },
           ideologyDelta: { dark: 3 },
           flags: ['yankee_redsox', 'dark_brandon'],

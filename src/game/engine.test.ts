@@ -18,7 +18,7 @@ test('all 50 states + DC sum to exactly 538 electoral votes', () => {
   assert.equal(totalEV, 538);
 });
 
-test('ENDING_CATALOG contains 20 unique endings covering all categories', () => {
+test('ENDING_CATALOG contains 20 unique endings with newspaper metadata covering all categories', () => {
   assert.equal(ENDING_CATALOG.length, 20);
   const ids = new Set(ENDING_CATALOG.map((e) => e.id));
   assert.equal(ids.size, 20);
@@ -26,6 +26,11 @@ test('ENDING_CATALOG contains 20 unique endings covering all categories', () => 
   assert.equal(ENDING_CATALOG.filter((e) => e.category === 'victory').length, 3);
   assert.equal(ENDING_CATALOG.filter((e) => e.category === 'unconventional').length, 4);
   assert.equal(ENDING_CATALOG.filter((e) => e.category === 'loss').length, 4);
+  for (const entry of ENDING_CATALOG) {
+    assert.ok(entry.newspaper.name.length > 0, `Missing newspaper name for ${entry.id}`);
+    assert.ok(entry.newspaper.location.length > 0, `Missing newspaper location for ${entry.id}`);
+    assert.ok(entry.newspaper.editionTag.length > 0, `Missing editionTag for ${entry.id}`);
+  }
 });
 
 test('initial campaign starts unaligned as an ~226 EV underdog', () => {
@@ -79,12 +84,14 @@ test('all 6 user-requested hidden endings + Yankee-Red Sox trigger accurately', 
   huey.finished = true;
   assert.equal(resolveCampaignEnding(huey).id, 'huey_long');
 
-  // 2. WHAT THE FUCK, DIXIECRAT?!?!?! (Win Deep South + lose CA/NY/MA + WIN election >= 270)
+  // 2. WHAT THE FUCK, DIXIECRAT?!?!?! (Win Deep South + lose CA, NY, or MA + WIN election >= 270)
   const dixie = createInitialCampaign();
   for (const k of Object.keys(dixie.margins) as StateCode[]) {
     dixie.margins[k] = 4.0;
   }
+  dixie.margins.OK = -10;
   dixie.ideology = 'conservative';
+  dixie.flags.dixiecratUsed = true;
   dixie.margins.AL = 3.0;
   dixie.margins.MS = 2.5;
   dixie.margins.LA = 4.0;
@@ -112,13 +119,21 @@ test('all 6 user-requested hidden endings + Yankee-Red Sox trigger accurately', 
   mondale.finished = true;
   assert.equal(resolveCampaignEnding(mondale).id, 'mondale');
 
-  // 4. FDR IN 2028
+  // 4. FDR IN 2028 (strictly >= 415 EV; blind choice-0 spam hits 406 EV and must NOT trigger FDR)
   const fdr = createInitialCampaign();
   for (const k of Object.keys(fdr.margins) as StateCode[]) {
     fdr.margins[k] = 15;
   }
   fdr.finished = true;
   assert.equal(resolveCampaignEnding(fdr).id, 'fdr_2028');
+  assert.notEqual(evaluateEnding(fdr, 406).id, 'fdr_2028');
+
+  let blindSpamRun = createInitialCampaign();
+  for (let r = 0; r < 10; r++) {
+    blindSpamRun = applyChoiceTurn(blindSpamRun, ROUND_SCENARIOS[r].choices[0]);
+  }
+  assert.equal(computeElectoralSummary(blindSpamRun.margins).demEV, 406);
+  assert.notEqual(resolveCampaignEnding(blindSpamRun).id, 'fdr_2028');
 
   // 5. You’re not even as good as that pig in Chicago named "Pigasus."
   const pigasus = createInitialCampaign();
@@ -139,12 +154,21 @@ test('all 6 user-requested hidden endings + Yankee-Red Sox trigger accurately', 
   bluxas.finished = true;
   assert.equal(resolveCampaignEnding(bluxas).id, 'bluxas_lost');
 
-  // 7. Yankee-Red Sox Miracle
+  // 7. Yankee-Red Sox Miracle (Win NY & MA + win presidency >= 270, while LOSING PA < 0 and IL < 0)
+  const yankeeNeedPenalty = createInitialCampaign();
+  yankeeNeedPenalty.flags.yankeeRedSoxCount = 2;
+  yankeeNeedPenalty.margins.NY = 18;
+  yankeeNeedPenalty.margins.MA = 28;
+  yankeeNeedPenalty.margins.PA = 3.5;
+  yankeeNeedPenalty.margins.IL = 4.0;
+  assert.notEqual(evaluateEnding(yankeeNeedPenalty, 285).id, 'yankee_redsox');
+
   const yankee = createInitialCampaign();
   yankee.flags.yankeeRedSoxCount = 2;
   yankee.margins.NY = 18;
   yankee.margins.MA = 28;
-  yankee.margins.PA = 3.5;
+  yankee.margins.PA = -2.5;
+  yankee.margins.IL = -0.8;
   yankee.finished = true;
   assert.equal(evaluateEnding(yankee, 285).id, 'yankee_redsox');
 
@@ -200,7 +224,7 @@ test('unconventional and defeat endings trigger under their exact rules', () => 
   assert.equal(blueDogRun.ideology, 'conservative');
   assert.equal(resolveCampaignEnding(blueDogRun).id, 'blue_dog_reversal');
 
-  // Segregation Now! (MUST win Alabama AL > 0 and lose < 270 EV)
+  // Segregation Now! (MUST win Alabama AL > 0 and lose < 269 EV)
   const segFailNoAL = createInitialCampaign();
   for (const k of Object.keys(segFailNoAL.margins) as StateCode[]) {
     segFailNoAL.margins[k] = -12;
@@ -225,7 +249,7 @@ test('unconventional and defeat endings trigger under their exact rules', () => 
   segNow.margins.AL = 3.5;
   segNow.margins.MS = 2.5;
   segNow.margins.NY = -5;
-  assert.ok(computeElectoralSummary(segNow.margins).demEV < 270);
+  assert.ok(computeElectoralSummary(segNow.margins).demEV < 269);
   const segRes = resolveCampaignEnding(segNow);
   assert.equal(segRes.id, 'segregation_now');
   assert.equal(segRes.isHidden, true);
@@ -239,7 +263,7 @@ test('unconventional and defeat endings trigger under their exact rules', () => 
     segRun = applyChoiceTurn(segRun, ROUND_SCENARIOS[r].choices[segPath[r]]);
   }
   assert.ok(segRun.margins.AL > 0, `Expected AL > 0 on segRun, got ${segRun.margins.AL}`);
-  assert.ok(computeElectoralSummary(segRun.margins).demEV < 270);
+  assert.ok(computeElectoralSummary(segRun.margins).demEV < 269);
   assert.equal(resolveCampaignEnding(segRun).id, 'segregation_now');
 
   const wokeLoss = createInitialCampaign();
@@ -274,13 +298,14 @@ test('preset choices support multiple SpecialFlag[] entries', () => {
 });
 
 test('multi-ending resolution unlocks concurrent endings without masking specific achievements', () => {
-  // Specific Yankee-Red Sox + broad FDR 2028 (>=385) should keep Yankee-Red Sox as primary AND co-unlock fdr_2028
+  // Specific Yankee-Red Sox + broad FDR 2028 (>=415) should keep Yankee-Red Sox as primary AND co-unlock fdr_2028
   const combo = createInitialCampaign();
   combo.flags.yankeeRedSoxCount = 2;
   combo.margins.NY = 18;
   combo.margins.MA = 25;
-  combo.margins.PA = 4;
-  const comboRes = evaluateEndings(combo, 392);
+  combo.margins.PA = -1.5;
+  combo.margins.IL = -0.8;
+  const comboRes = evaluateEndings(combo, 420);
   assert.equal(comboRes.primary.id, 'yankee_redsox');
   assert.ok(comboRes.allTriggered.some((e) => e.id === 'yankee_redsox'));
   assert.ok(comboRes.allTriggered.some((e) => e.id === 'fdr_2028'));
@@ -295,4 +320,115 @@ test('multi-ending resolution unlocks concurrent endings without masking specifi
   assert.equal(dualRes.primary.id, 'alfalfa_bill');
   assert.ok(dualRes.allTriggered.some((e) => e.id === 'alfalfa_bill'));
   assert.ok(dualRes.allTriggered.some((e) => e.id === 'huey_long'));
+});
+
+test('Pigasus never triggers on victories or 269 ties, and 269-269 tie always keeps primary priority', () => {
+  // Real 10-round path picking r2_pigasus and losing IL while still winning 281 EV MUST NOT trigger Pigasus
+  let pigWinRun = createInitialCampaign();
+  const pigWinPath = [0, 3, 0, 0, 0, 0, 0, 0, 0, 0];
+  for (let r = 0; r < 10; r++) {
+    pigWinRun = applyChoiceTurn(pigWinRun, ROUND_SCENARIOS[r].choices[pigWinPath[r]]);
+  }
+  const pigWinSummary = computeElectoralSummary(pigWinRun.margins);
+  assert.equal(pigWinRun.flags.pigasusCount, 1);
+  assert.ok(pigWinRun.margins.IL < 0, `Expected IL < 0, got ${pigWinRun.margins.IL}`);
+  assert.ok(pigWinSummary.demEV >= 270, `Expected >= 270 EV, got ${pigWinSummary.demEV}`);
+  const pigWinRes = resolveCampaignEndings(pigWinRun);
+  assert.ok(!pigWinRes.allTriggered.some((e) => e.id === 'pigasus'));
+
+  // Synthetic 269-269 tie even with OK/LA/TX/AL/IL conditions: tie_269 MUST remain primary, and outright-defeat endings MUST NOT fire
+  const tieChaos = createInitialCampaign();
+  tieChaos.flags.alfalfaBillUsed = true;
+  tieChaos.flags.hueyLongUsed = true;
+  tieChaos.flags.dixiecratUsed = true;
+  tieChaos.flags.pigasusCount = 1;
+  tieChaos.margins.OK = 4.0;
+  tieChaos.margins.LA = 5.0;
+  tieChaos.margins.TX = 3.0;
+  tieChaos.margins.AL = 2.0;
+  tieChaos.margins.IL = -4.0;
+  const tieRes = evaluateEndings(tieChaos, 269);
+  assert.equal(tieRes.primary.id, 'tie_269');
+  assert.ok(!tieRes.allTriggered.some((e) => e.id === 'pigasus'));
+  assert.ok(!tieRes.allTriggered.some((e) => e.id === 'bluxas_lost'));
+  assert.ok(!tieRes.allTriggered.some((e) => e.id === 'segregation_now'));
+  assert.ok(tieRes.allTriggered.some((e) => e.id === 'alfalfa_bill'));
+  assert.ok(tieRes.allTriggered.some((e) => e.id === 'huey_long'));
+
+  // Special ending priority: Dixiecrat & Segregation Now & Yankee-Red Sox outrank incidental Huey Long while co-unlocking it
+  const dixieVsHuey = createInitialCampaign();
+  dixieVsHuey.flags.dixiecratUsed = true;
+  dixieVsHuey.flags.hueyLongUsed = true;
+  dixieVsHuey.ideology = 'conservative';
+  dixieVsHuey.margins.AL = 2.0;
+  dixieVsHuey.margins.LA = 12.0;
+  dixieVsHuey.margins.NY = -5.0;
+  const dixiePriority = evaluateEndings(dixieVsHuey, 290);
+  assert.equal(dixiePriority.primary.id, 'dixiecrat');
+  assert.ok(dixiePriority.allTriggered.some((e) => e.id === 'huey_long'));
+
+  const segVsHuey = createInitialCampaign();
+  segVsHuey.flags.dixiecratUsed = true;
+  segVsHuey.flags.hueyLongUsed = true;
+  segVsHuey.margins.AL = 2.5;
+  segVsHuey.margins.LA = 14.0;
+  const segPriority = evaluateEndings(segVsHuey, 250);
+  assert.equal(segPriority.primary.id, 'segregation_now');
+  assert.ok(segPriority.allTriggered.some((e) => e.id === 'huey_long'));
+
+  const yanksVsHuey = createInitialCampaign();
+  yanksVsHuey.flags.yankeeRedSoxCount = 2;
+  yanksVsHuey.flags.hueyLongUsed = true;
+  yanksVsHuey.ideology = 'populist';
+  yanksVsHuey.margins.NY = 20;
+  yanksVsHuey.margins.MA = 28;
+  yanksVsHuey.margins.PA = -2.2;
+  yanksVsHuey.margins.IL = -1.4;
+  yanksVsHuey.margins.LA = 12;
+  const yanksPriority = evaluateEndings(yanksVsHuey, 310);
+  assert.equal(yanksPriority.primary.id, 'yankee_redsox');
+  assert.ok(yanksPriority.allTriggered.some((e) => e.id === 'huey_long'));
+});
+
+test('all 20 endings in ENDING_CATALOG are genuinely achievable via real 10-round preset paths', () => {
+  const REAL_10_ROUND_PATHS: Record<string, number[]> = {
+    huey_long: [0, 0, 0, 0, 0, 0, 0, 0, 3, 3],
+    dixiecrat: [0, 0, 0, 0, 0, 2, 0, 1, 3, 0],
+    mondale: [0, 0, 0, 0, 0, 3, 2, 3, 0, 3],
+    fdr_2028: [3, 0, 0, 0, 0, 1, 0, 0, 3, 1],
+    pigasus: [0, 3, 0, 0, 0, 0, 0, 3, 3, 0],
+    bluxas_lost: [0, 0, 0, 0, 0, 0, 0, 3, 2, 3],
+    yankee_redsox: [0, 0, 0, 0, 0, 0, 0, 3, 1, 2],
+    alfalfa_bill: [0, 0, 2, 0, 0, 2, 1, 2, 0, 0],
+    segregation_now: [3, 0, 1, 3, 3, 2, 1, 3, 3, 0],
+    blue_tsunami: [0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+    blue_wall_normalcy: [0, 0, 0, 0, 0, 0, 1, 3, 1, 3],
+    new_new_deal: [0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
+    sun_belt_realignment: [0, 0, 0, 0, 0, 0, 0, 1, 1, 3],
+    blue_dog_reversal: [0, 0, 0, 0, 0, 1, 1, 2, 3, 3],
+    dark_brandon_ascendant: [0, 0, 0, 0, 0, 0, 0, 0, 2, 3],
+    tie_269: [0, 0, 0, 1, 0, 1, 0, 1, 3, 3],
+    woke_echo_chamber: [0, 0, 0, 1, 0, 3, 1, 3, 0, 3],
+    consultants_graveyard: [0, 0, 0, 0, 0, 0, 0, 3, 2, 2],
+    rust_belt_betrayal: [0, 0, 0, 0, 0, 3, 0, 0, 2, 3],
+    dynasty_loss: [0, 0, 0, 0, 0, 3, 2, 3, 3, 2],
+  };
+
+  assert.equal(Object.keys(REAL_10_ROUND_PATHS).length, ENDING_CATALOG.length);
+
+  for (const entry of ENDING_CATALOG) {
+    const path = REAL_10_ROUND_PATHS[entry.id];
+    assert.ok(path && path.length === 10, `Missing 10-round path for ${entry.id}`);
+    let run = createInitialCampaign();
+    for (let r = 0; r < 10; r++) {
+      run = applyChoiceTurn(run, ROUND_SCENARIOS[r].choices[path[r]]);
+    }
+    assert.equal(run.finished, true);
+    const res = resolveCampaignEndings(run);
+    assert.equal(
+      res.primary.id,
+      entry.id,
+      `Expected path [${path.join(',')}] to resolve primary ending '${entry.id}', got '${res.primary.id}' (EV=${computeElectoralSummary(run.margins).demEV})`
+    );
+  }
 });

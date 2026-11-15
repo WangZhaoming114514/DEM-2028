@@ -18,7 +18,7 @@ const AVATAR_MAP: Record<SpeakerId, { src: string; alt: string }> = {
     alt: 'JD Vance 头像',
   },
   rubio: {
-    src: '/src/assets/images/portrait_rubio_1794685053917.jpg',
+    src: '/src/assets/images/portrait_rubio_1794730913609.jpg',
     alt: 'Marco Rubio 头像',
   },
 };

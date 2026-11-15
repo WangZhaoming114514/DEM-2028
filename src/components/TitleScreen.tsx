@@ -196,7 +196,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
                 <div className="flex items-start gap-3.5 rounded-md border border-slate-800 bg-[#111827]/90 p-3.5">
                   <img
-                    src="/src/assets/images/portrait_rubio_1794685053917.jpg"
+                    src="/src/assets/images/portrait_rubio_1794730913609.jpg"
                     alt="Marco Rubio"
                     className="h-14 w-14 shrink-0 rounded object-cover border border-slate-700"
                   />

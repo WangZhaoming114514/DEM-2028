@@ -165,10 +165,12 @@ export const EndingCodexModal: React.FC<EndingCodexModalProps> = ({
                         <span className={`font-bold ${statusAccent}`}>
                           {CATEGORY_LABELS[entry.category]} · {isUnlocked ? '已完成' : '未完成'}
                         </span>
-                        {isUnlocked && record && (
+                        {isUnlocked && record ? (
                           <span className="text-slate-400">
                             最佳 {record.bestDemEV} EV · 达成 {record.count} 次
                           </span>
+                        ) : (
+                          <span className="text-slate-500">{entry.newspaper.name}</span>
                         )}
                       </div>
 
@@ -183,6 +185,11 @@ export const EndingCodexModal: React.FC<EndingCodexModalProps> = ({
                             ? '秘密历史分支 · 需在特定州或话术下触发'
                             : entry.subtitle}
                       </p>
+                      {isUnlocked && (
+                        <div className="text-[11px] font-editorial-body italic text-slate-400">
+                          头版刊载：{entry.newspaper.name} ({entry.newspaper.location})
+                        </div>
+                      )}
                     </div>
 
                     <p className={`text-xs leading-relaxed ${isUnlocked ? 'text-slate-300' : 'text-slate-500'}`}>

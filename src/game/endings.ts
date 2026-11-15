@@ -7,114 +7,177 @@ import {
 } from './types';
 
 export const ENDING_CATALOG: EndingCatalogEntry[] = [
-  // ==================== HIDDEN ENDINGS (7) ====================
+  // ==================== HIDDEN ENDINGS (9) ====================
   {
     id: 'huey_long',
     isHidden: true,
     category: 'hidden',
     title: 'KINGFISH HUEY LONG IN LOUISIANA AGAIN?',
-    subtitle: '隐藏结局 · 巴吞鲁日之王还魂！Every Man a King!',
+    subtitle: '隐藏结局 · 巴吞鲁日之王还魂！Every Man a King—Every Voter a Shareholder!',
     epilogue:
-      '全美民调机构连夜召开紧急记者会——路易斯安那州在2028年竟然翻蓝了！你在密西西比河两岸掀起的“均分财富”民粹狂潮让红脖子农夫与新奥尔良码头工人同时站到了同一面旗帜下。休伊·朗在1935年没来得及走完的路，被你用十条推特在2028年强行接通了高压电。',
+      '新奥尔良法国区半夜响起了铜管乐队，民调公司连夜把模型扔进了密西西比河——路易斯安那州在2028年居然翻蓝了！你用十条推特打通了油田钻井工与码头工人的任督二脉，把华尔街高管的年终奖拆成全民分红支票甩在桌上。休伊·朗1935年在州议会走廊里没走完的那一步，被你在键盘上直接拉满了两万伏电压。',
     badgeLabel: 'HIDDEN ENDING · KINGFISH',
     theme: 'chaos',
-    hint: '线索：在推特战场狂飙民粹话术，并在开票夜必须真正赢下路易斯安那州（LA > 0）。',
+    hint: '线索：在推特战场狂飙民粹话术，并在开票夜必须真正赢下路易斯安那州（LA ≥ 0）。',
+    newspaper: {
+      name: 'The Times-Picayune',
+      motto: 'NEW ORLEANS’ VOICE OF THE BAYOU SINCE 1837',
+      location: 'NEW ORLEANS, LA',
+      editionTag: 'LOUISIANA EXTRA · EVERY MAN A KING',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'dixiecrat',
     isHidden: true,
     category: 'hidden',
     title: 'WHAT THE FUCK, DIXIECRAT?!?!?!',
-    subtitle: '隐藏结局 · 1948年瑟蒙德逆袭夺权！赢下南方、丢掉海岸线却拿下了白宫',
+    subtitle: '隐藏结局 · 1948年瑟蒙德反向夺舍！丢掉纽约加州却靠深南拿下了白宫',
     epilogue:
-      'MSNBC和福克斯新闻的演播室同时陷入长达五分钟的死寂：你硬生生丢掉了纽约、加州或马萨诸塞这样的海岸线蓝营铁票仓，却在路易斯安那、密西西比、阿拉巴马和南卡罗来纳杀穿了深南版图，并一路凑齐超过270张选举人票迈进白宫！民主党全国委员会主席看着地图怀疑自己是不是穿越回了1948年。',
+      'MSNBC和福克斯新闻的演播室同时死机五分钟，主播对着蓝色阿拉巴马与红色纽约揉了八遍隐形眼镜：你居然在海岸线铁票仓里精准翻车，转头却用南方州权和石油红利把路易斯安那、密西西比、阿拉巴马和南卡刷得比民主党老家还蓝，硬生生凑够270+张选举人票撞开白宫大门！民主党全国委员会连夜翻出1948年党章确认自己没报错名。',
     badgeLabel: 'HIDDEN ENDING · DIXIECRAT WIN',
     theme: 'cursed',
     hint: '线索：狂打南方州权与石油牌，赢下至少 2 个深南州且丢掉 CA、NY 或 MA 之一，同时总票数仍达 270+ 胜选。',
+    newspaper: {
+      name: 'The State',
+      motto: 'SOUTH CAROLINA’S PAPER OF RECORD SINCE 1891',
+      location: 'COLUMBIA, SC',
+      editionTag: 'SPECIAL SOUTHERN RECKONING EDITION',
+      mastheadFont: 'serif',
+    },
   },
   {
     id: 'mondale',
     isHidden: true,
     category: 'hidden',
     title: 'Sir, you’d be better off doing what Mondale did—winning Minnesota by 3,000 votes.',
-    subtitle: '隐藏结局 · 1984沃尔特·蒙代尔的悲壮哲学胜利',
+    subtitle: '隐藏结局 · 1984沃尔特·蒙代尔的行为艺术级惨败',
     epilogue:
-      '从加利福尼亚到缅因州，整张选举地图变成了一片刺眼的红海，唯有明尼苏达州与华盛顿特区在寒冷的十一月夜里亮起微弱的蓝灯。1984年蒙代尔在全美惨败里以3,761票保住故乡的最后尊严；2028年，你在推特战场上用整整十个回合精准重演了这场行为艺术。',
+      '除了明尼阿波利斯街头几块倔强的蓝色草坪牌和华盛顿特区的公务员，整张美国地图在晚上九点半就变成了红得发亮的共和党烤肉派对。当年蒙代尔全国惨败49州、靠着3,761票守住故乡尊严；2028年你把整套竞选预算精准烧成了一份只讨好双子城选民的艺术品，连川普的胜选派对都腾出三分钟为你鼓掌致敬。',
     badgeLabel: 'HIDDEN ENDING · MONDALE 1984',
     theme: 'loss',
     hint: '线索：第5回合选择“保住明尼苏达的体面”并在大选中惨败（<220票），同时守住明尼苏达（MN）。',
+    newspaper: {
+      name: 'Star Tribune',
+      motto: 'MINNESOTA’S OWN MORNING DISPATCH',
+      location: 'MINNEAPOLIS, MN',
+      editionTag: 'NORTH STAR SOLE SURVIVOR EDITION',
+      mastheadFont: 'serif',
+    },
   },
   {
     id: 'fdr_2028',
     isHidden: true,
     category: 'hidden',
     title: 'FDR IN 2028',
-    subtitle: '隐藏结局 · 1936年式蓝色超级大洪水，碾碎第22修正案复辟',
+    subtitle: '隐藏结局 · 1936年式415+蓝色超级洪水，把第22修正案复辟梦焊进水泥',
     epilogue:
-      '你横扫全美超过385张选举人票！从五大湖到阳光带，从西海岸到阿巴拉契亚边缘，整片大陆被刷成了令人窒息的深蓝。川普的“无限连任”白日梦在凌晨两点前彻底蒸发，万斯连夜清空推特草稿箱，卢比奥买光了机场便利店的矿泉水。历史学家将这一夜定名为“新新政元年”。',
+      '全美选举人票定格在惊世骇俗的415+！从伊利湖钢铁厂到亚利桑那仙人掌带，连深红州郡县都冒出蓝色惊叹号。凌晨两点，川普的“无限连任”金箔皇冠在电视直播里当场化灰，JD·万斯连夜把推特账号改成私人摄影博客，马可·卢比奥一口气拧空了两箱机场矿泉水并递交了退休申请。',
     badgeLabel: 'HIDDEN ENDING · FDR 2028',
     theme: 'victory',
-    hint: '线索：以压倒性的跨派系动员赢下至少385张选举人票。',
+    hint: '线索：不再允许无脑单点通关！必须精算十回合跨派系组合，赢下至少 415 张选举人票。',
+    newspaper: {
+      name: 'The Washington Post',
+      motto: 'DEMOCRACY DIES IN DARKNESS — AND LIVES BY 415+ EV',
+      location: 'WASHINGTON, D.C.',
+      editionTag: 'LANDSLIDE EXTRA · HISTORIC MANDATE',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'pigasus',
     isHidden: true,
     category: 'hidden',
     title: 'You’re not even as good as that pig in Chicago named "Pigasus."',
-    subtitle: '隐藏结局 · 连1968年芝加哥街头被提名的猪都不如',
+    subtitle: '隐藏结局 · 1968年芝加哥被提名的猪看了你的战绩都得连夜买站票跑路',
     epilogue:
-      '大选夜开票刚过45分钟，所有电视网就已经停止了常规分析。1968年易皮士在芝加哥推举的那头猪Pigasus好歹逗乐了全国新闻界，而你却成功把全美几乎所有蓝州打包送进了喜剧垃圾桶。川普在海湖庄园正式宣布取消下届大选，白宫玫瑰园明天动工改建推杆果岭。',
+      '开票才刚过四十分钟，CNN的电子地图就已经无聊到开始播天气预报。1968年易皮士在芝加哥格兰特公园提名那头重145磅的公猪Pigasus竞选总统时，至少还逗笑了半个美国新闻界；而你用十回合亲手把全美蓝州打包送进了喜马拉雅山级的笑话堆。川普明天早上就把白宫新闻简报室改建成高尔夫模拟器。',
     badgeLabel: 'HIDDEN ENDING · PIGASUS',
     theme: 'cursed',
-    hint: '线索：第2回合向1968芝加哥小猪“摆烂致敬”，并让民主党大败（<185票或丢掉伊利诺伊州）。',
+    hint: '线索：第2回合向1968芝加哥小猪“摆烂致敬”并在大选中溃败（<185票，或<215票且丢掉伊利诺伊州）；或在未守住明尼苏达时总票数跌至80票以下。',
+    newspaper: {
+      name: 'Chicago Tribune',
+      motto: 'THE WORLD’S GREATEST NEWSPAPER SINCE 1847',
+      location: 'CHICAGO, IL',
+      editionTag: 'GRANT PARK COMEDY FINAL',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'bluxas_lost',
     isHidden: true,
     category: 'hidden',
     title: 'Texas has flipped blue—you still lost ……',
-    subtitle: '隐藏结局 · 孤星州奇迹翻蓝，但白宫丢了',
+    subtitle: '隐藏结局 · 赢了得克萨斯40张票，却把整个白宫输给了物理法则',
     epilogue:
-      '奥斯汀和休斯顿的蓝色烟花刚刚升空，你竞选总部的香槟才撬开一半，宾夕法尼亚、密歇根和威斯康星的计票器同时把你拖进了冰窟。你成了美国政治史上最荒诞的注脚：唯一赢下得克萨斯40张选举人票、却凑不够270票的民主党提名人。',
+      '奥斯汀和休斯顿的蓝色烟花刚刚照亮夜空，竞选团队香槟才撬开第一瓶软木塞，密歇根、宾州和威斯康星的计票器就在五分钟内把你一脚踹进了下水道。政治学教科书为这一夜专门单开了一章：史上唯一一个把“不可能的得克萨斯”染蓝、却凑不够270张选举人票回华盛顿打包搬家的天才。',
     badgeLabel: 'HIDDEN ENDING · BLUXAS CURSE',
     theme: 'loss',
-    hint: '线索：重兵猛攻并翻转得克萨斯州（TX），但最终总票数仍低于270票。',
+    hint: '线索：重兵猛攻并翻转得克萨斯州（TX），但最终总票数仍低于 270 票。',
+    newspaper: {
+      name: 'The Dallas Morning News',
+      motto: 'LONE STAR STATE INDEPENDENT PRESS',
+      location: 'DALLAS, TX',
+      editionTag: 'TEXAS MORNING MIRACLE & HEARTBREAK',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'yankee_redsox',
     isHidden: true,
     category: 'hidden',
     title: 'YANKEE–RED SOX MIRACLE ON PENNSYLVANIA AVE',
-    subtitle: '隐藏结局 · 布朗克斯与芬威球场百年停火，共迎白宫新主',
+    subtitle: '隐藏结局 · 洋基与红袜百年停火赢下白宫，代价是费城人与芝加哥白袜联合掀桌',
     epilogue:
-      '这是体育社会学史上最不可思议的夜晚：洋基球场和芬威球场的死忠居然为了同一句推文把啤酒杯碰在了一起！你靠着东海岸百年世仇破天荒的大团结拿下关键东北版图并顺利跨越270票门槛。就职典礼上，你顶着全美棒球记者的闪光灯把洋基队帽和红袜队帽叠戴在了一起。',
+      '体育社会学当场宣布破产：布朗克斯的条纹衫死忠和芬威球场的绿怪物信徒居然为了你的推文勾肩搭背拼完了一箱啤酒，纽约州与麻萨诸塞州把你一路抬进270+白宫宝座！唯一的副作用是费城人和芝加哥白袜球迷当场连夜把宾夕法尼亚和伊利诺伊全票投给了对手——他们宁可看万斯演讲也不愿给戴着洋基红袜双拼鸭舌帽的人投票。',
     badgeLabel: 'HIDDEN ENDING · MLB TRUCE',
     theme: 'victory',
-    hint: '线索：多次同时高呼“纽约洋基万岁”与“波士顿红袜万岁”，并拿下纽约、麻省与宾州入主白宫。',
+    hint: '线索：多次同时高呼“纽约洋基与波士顿红袜万岁”，赢下纽约（NY ≥ 0）与麻州（MA ≥ 0）并胜选（≥270），同时因惹毛费城人与白袜球迷而丢掉宾州（PA < 0）和伊利诺伊（IL < 0）。',
+    newspaper: {
+      name: 'The Boston Globe',
+      motto: 'NEW ENGLAND’S VOICE SINCE 1872',
+      location: 'BOSTON, MA',
+      editionTag: 'FENWAY–BRONX DETENTE SPECIAL',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'alfalfa_bill',
     isHidden: true,
     category: 'hidden',
     title: 'ALFALFA BILL RIDES AGAIN: BREAD, BUTTER, BACON & BEANS',
-    subtitle: '隐藏结局 · 俄克拉荷马“紫花苜蓿比尔”还魂！红河派兵保卫草原与油田',
+    subtitle: '隐藏结局 · “紫花苜蓿比尔”红河拔枪！靠生洋葱与国民警卫队拿下俄克拉荷马',
     epilogue:
-      '全美政治观察家集体揉碎了眼镜：俄克拉荷马的红河岸边竟然掀起了1931年威廉·默里（“Alfalfa Bill”）式的狂野草原民粹风暴！你左手塞满洋葱和苏打饼干、右手下令国民警卫队封锁寡头油井，靠着“面包、黄油、培根与豆子”的硬核口号把华尔街银行家和海湖庄园同时吓出了偏头痛。',
+      'DC政治评论员集体咬断了钢笔：1931年俄克拉荷马那位揣着生洋葱和苏打饼干、动不动派国民警卫队封锁油井和跨河大桥的传奇州长威廉·默里（“Alfalfa Bill”）居然借你的身体还魂了！全美77个县除了牧场就是油井的俄克拉荷马被你刷成深蓝，华尔街高管和海湖庄园连夜翻百科全书查“面包、黄油、培根与豆子”到底是哪套宏观经济模型。',
     badgeLabel: 'HIDDEN ENDING · ALFALFA BILL',
     theme: 'chaos',
-    hint: '线索：第8回合高喊“面包、黄油、培根与豆子”并配合草原/民粹路线，在开票夜必须真正赢下俄克拉荷马州（OK > 0）。',
+    hint: '线索：第8回合高喊“面包、黄油、培根与豆子”并走草原民粹路线，在开票夜必须真正赢下俄克拉荷马州（OK ≥ 0）。',
+    newspaper: {
+      name: 'The Oklahoman',
+      motto: 'HEARTLAND DISPATCH SINCE 1889',
+      location: 'OKLAHOMA CITY, OK',
+      editionTag: 'RED RIVER POPULIST UPRISING',
+      mastheadFont: 'serif',
+    },
   },
   {
     id: 'segregation_now',
     isHidden: true,
     category: 'hidden',
     title: 'Segregation now, segregation tomorrow, segregation forever!',
-    subtitle: '隐藏结局 · 1963年乔治·华莱士幽灵附体？赢下深南红州却把白宫输光',
+    subtitle: '隐藏结局 · 1963年乔治·华莱士幽灵夺舍！拿下阿拉巴马却把白宫输了个精光',
     epilogue:
-      '阿拉巴马、密西西比、路易斯安那与南卡罗来纳的计票器在夜里刷出一片刺眼的深蓝——你把1963年乔治·华莱士站在蒙哥马利州议会台阶上的那句臭名昭著的台词与州权剧本背得滚瓜烂熟。唯一的代价是全美其余大部分州把你连同南方州权宣言一起踢出了局，宾夕法尼亚大道1600号继续由川普和万斯永久霸占。',
+      '蒙哥马利州议会台阶上的幽灵半夜掀开棺材板对你比了个大拇指——阿拉巴马、密西西比和南卡的计票屏一夜刷蓝，仿佛1963年重装上线。代价也十分公平：全美其余三十几个州连同你的道德名声一起把你踢出了白宫大门。川普在海湖庄园开怀大笑，顺手给你颁了一枚“荣誉南方州长”塑料奖章。',
     badgeLabel: 'HIDDEN ENDING · WALLACE 1963',
     theme: 'cursed',
-    hint: '线索：狂打南方州权牌并必须真正赢下阿拉巴马州（AL > 0）等深南阵地，但最终总票数不足 270 败选。',
+    hint: '线索：狂打南方州权牌并必须真正赢下阿拉巴马州（AL ≥ 0）等深南阵地，但最终总票数不足 269 败选。',
+    newspaper: {
+      name: 'The Montgomery Advertiser',
+      motto: 'ALABAMA’S CAPITAL CHRONICLE SINCE 1829',
+      location: 'MONTGOMERY, AL',
+      editionTag: 'DIXIE TIMEWARP EDITION',
+      mastheadFont: 'serif',
+    },
   },
 
   // ==================== NORMAL VICTORY ENDINGS (3) ====================
@@ -123,36 +186,57 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
     isHidden: false,
     category: 'victory',
     title: 'BLUE TSUNAMI: THE 22ND AMENDMENT RESTORED',
-    subtitle: '常规大胜 · 压倒性光复白宫，终结无限连任妄想',
+    subtitle: '常规大胜 · 蓝色海啸席卷摇摆州，川普“第三任期”打包进碎纸机',
     epilogue:
-      '经过十个回合的全网舆论肉搏，你以超过335张选举人票的庞大优势横扫全部核心摇摆州。次日清晨，国会山两院火速起草恢复宪法第22修正案的紧急法案，川普连夜带着他装满高尔夫球杆和机密文件箱的专机飞回佛罗里达。',
+      '经过十个回合的全网嘴炮肉搏，你以335–414张选举人票横扫核心战场。清晨六点，参众两院火速起草重新锁死第22修正案的紧急宪法条文；川普在海湖庄园专机舷梯上对着镜头大喊“选票被外星人调包了”，但行李箱里早已悄悄塞好了十二根镀金高尔夫球杆。',
     badgeLabel: 'LANDSLIDE VICTORY · 335+',
     theme: 'victory',
-    hint: '正常通关：赢得 335–384 张选举人票（且未触发非常规或隐藏条件）。',
+    hint: '正常通关：赢得 335–414 张选举人票（且未触发非常规或隐藏条件）。',
+    newspaper: {
+      name: 'The New York Times',
+      motto: 'ALL THE NEWS THAT’S FIT TO PRINT',
+      location: 'NEW YORK, NY',
+      editionTag: 'LATE CITY EDITION · BLUE WAVE',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'blue_wall_normalcy',
     isHidden: false,
     category: 'victory',
     title: 'BLUE WALL FORTRESS: RETURN TO BORING NORMALCY',
-    subtitle: '常规胜选 · 自由/温和派主导，让华盛顿重新无聊起来',
+    subtitle: '常规胜选 · 中产郊区赢回白宫，让华盛顿新闻终于又能催眠了',
     epilogue:
-      '你在宾夕法尼亚与各大战场顶住压力夺回白宫，郊区中产与独立选民用选票证明他们实在受够了每天凌晨三点被总统的荒诞推文吵醒。你以体面的建制派风格走进宾夕法尼亚大道1600号——白宫记者团终于又能正常睡个整觉了。',
+      '你在宾夕法尼亚、密歇根和威斯康星顶住最后压力守住蓝墙。全美郊区选民用选票传达了一个再朴素不过的愿望：他们真的受够了每天凌晨三点被全大写字母的总统推文吵醒。你拎着公文包安静走进白宫东翼，白宫记者团当晚集体睡了十年以来最香的一觉。',
     badgeLabel: 'VICTORY · NORMALCY',
     theme: 'victory',
     hint: '正常胜选：以自由派或温和派路线赢得 270–334 张选举人票。',
+    newspaper: {
+      name: 'The Washington Post',
+      motto: 'DEMOCRACY DIES IN DARKNESS',
+      location: 'WASHINGTON, D.C.',
+      editionTag: 'FINAL EDITION · RETURN TO NORMALCY',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'new_new_deal',
     isHidden: false,
     category: 'victory',
     title: 'THE 2028 UNION COALITION: WALL STREET ON NOTICE',
-    subtitle: '常规胜选 · 进步/民粹路线夺回白宫，工人与青年联合胜出',
+    subtitle: '常规胜选 · 蓝领工会与大学城联手翻盘，K街游说大楼连夜熄灯逃跑',
     epilogue:
-      '联合工会车间与大学城选民在最后48小时引爆投票率，把白宫交到了最令K街游说集团和科技寡头头皮发麻的总统手里。川普在败选声明里痛骂你是“穿西装的纵火犯”，而你在胜选台上直接把最低工资法案拍在了讲台上。',
+      '全美汽车工人联合会与大学城投票站在最后48小时刷爆排队长度，把白宫钥匙交到了最令对冲基金经理胃痛的总统手里。川普在败选文稿里怒骂你是“打着蓝领旗号的马克思”，而你在胜选台上直接把工会卡和反垄断传票一并拍在了讲台上。',
     badgeLabel: 'VICTORY · LABOR COALITION',
     theme: 'victory',
     hint: '正常胜选：以进步派或民粹路线赢下大选（270–334票）。',
+    newspaper: {
+      name: 'Detroit Free Press',
+      motto: 'ON GUARD FOR MICHIGAN SINCE 1831',
+      location: 'DETROIT, MI',
+      editionTag: 'GREAT LAKES UNION VICTORY EXTRA',
+      mastheadFont: 'blackletter',
+    },
   },
 
   // ==================== UNCONVENTIONAL BUT PLAUSIBLE (4) ====================
@@ -161,48 +245,76 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
     isHidden: false,
     category: 'unconventional',
     title: 'SUN BELT REALIGNMENT: RUST BELT WHO?',
-    subtitle: '非常规胜选 · 蓝墙倒了但照样进白宫，南方与西部新联盟崛起',
+    subtitle: '非常规胜选 · 蓝墙漏水没关系，阳光带三州抬着你侧门进白宫',
     epilogue:
-      '所有华盛顿传统政治学家都看傻了眼：你居然丢掉了宾夕法尼亚或密歇根，却凭借亚利桑那、佐治亚和北卡罗来纳组成的阳光带新联盟硬生生凑够了270+！费城的工会大佬还在发呆，亚特兰大和凤凰城的年轻人已经把白宫钥匙递到了你手上。',
+      '华盛顿老派铁锈带专家的眼镜片碎了一地：你居然把宾州或密歇根拱手让出，转头凭着亚利桑那、佐治亚和北卡的阳光带新联盟硬生生凑够270+！费城的工会主席还在电话里叹气，亚特兰大和凤凰城的年轻选民已经把椭圆形办公室的新密码发进了你的手机。',
     badgeLabel: 'UNCONVENTIONAL WIN · SUN BELT',
     theme: 'victory',
     hint: '非常规胜选：总票数 ≥270 并赢下 AZ+GA+NC，但输掉 PA、MI 或 WI 其中之一。',
+    newspaper: {
+      name: 'The Atlanta Journal-Constitution',
+      motto: 'COVERS DIXIE LIKE THE DEW',
+      location: 'ATLANTA, GA',
+      editionTag: 'NEW SOUTH SUN BELT EXTRA',
+      mastheadFont: 'serif',
+    },
   },
   {
     id: 'blue_dog_reversal',
     isHidden: false,
     category: 'unconventional',
     title: 'BLUE DOG RESURGENCE: OUT-REAGANED THE GOP',
-    subtitle: '非常规胜选 · 保守派民主党反客为主夺回白宫',
+    subtitle: '非常规胜选 · 蓝狗保守派反客为主，比里根还硬核地抢走了共和党生意',
     epilogue:
-      '你靠钻井、减税、强硬边境和老派爱国修辞把共和党彻底挤到了无处站脚的尴尬角落，硬是在保留足够蓝州的基础上拿下了270+。进步派议员在推特上气得连发八十条长文谴责你“比老布什还右”，但好歹你把川普赶出了白宫。',
+      '减税、打井、硬核边境加上复古爱国演讲——你把共和党的看家本领全盘抄走还打了个八折，硬是在没丢掉大盘蓝州的前提下拿下了270+！参议院进步派连发九十条推文控诉你“比老布什还右”，万斯站在舞台边缘彻底找不到自己该站哪一边。',
     badgeLabel: 'UNCONVENTIONAL WIN · BLUE DOG',
     theme: 'chaos',
     hint: '非常规胜选：最终主导派系为“保守派 (Blue Dog)”并赢得大选。',
+    newspaper: {
+      name: 'The Wall Street Journal',
+      motto: 'THE GLOBAL BUSINESS & POLICY DAILY',
+      location: 'NEW YORK, NY',
+      editionTag: 'MARKETS & CAPITAL SPECIAL',
+      mastheadFont: 'serif',
+    },
   },
   {
     id: 'dark_brandon_ascendant',
     isHidden: false,
     category: 'unconventional',
     title: 'DARK NOMINEE ASCENDANT: OUT-TRUMPED TRUMP',
-    subtitle: '非常规胜选 · 黑化流大胜，用魔法彻底轰碎魔法',
+    subtitle: '非常规胜选 · 彻底黑化发疯！用魔法泥石流把魔法本人拍在沙滩上',
     epilogue:
-      '既然这帮人在2027年撕了规则书，你干脆在推特上掀翻整张桌子，用比川普更凶残的Ratio、更下三路的嘲讽把他打得满地找牙。你在胜选演说上戴着墨镜冷笑：“放心，我们会修回第22修正案——但先把这帮家伙的传票一张张盖完章再说。”',
+      '既然对面在2027年率先撕毁规矩书，你干脆在推特上戴上激光墨镜掀翻整张辩论桌，靠更毒舌的Ratio和更狂野的直播梗把川普本人打成“温良恭俭让老绅士”。你在胜选演讲最后冷笑一声：“放心，第22修正案会修回来——等我先把传票和热搜全盖完章。”',
     badgeLabel: 'UNCONVENTIONAL WIN · DARK TIMELINE',
     theme: 'chaos',
     hint: '非常规胜选：最终主导派系为“黑化”或推特混乱度 ≥75 并赢得大选。',
+    newspaper: {
+      name: 'New York Post',
+      motto: 'FOUNDED 1801 BY ALEXANDER HAMILTON',
+      location: 'NEW YORK, NY',
+      editionTag: 'ALL-CAPS TABLOID CHAOS EDITION',
+      mastheadFont: 'condensed',
+    },
   },
   {
     id: 'tie_269',
     isHidden: false,
     category: 'unconventional',
     title: '269–269 CONTINGENT ELECTION NIGHTMARE',
-    subtitle: '非常规胶着 · 精确平票送进众议院，宪法漏洞吞噬一切',
+    subtitle: '非常规胶着 · 精确打成269平手，宪法第12修正案把白宫直接送给众议院共和党',
     epilogue:
-      '全美538张选举人票竟然像用手术刀切开一样精准停在 269 比 269！根据第12修正案，总统交由众议院按每州一票表决，共和党控制的州代表团数瞬间宣判你出局，JD·万斯也在参议院顺手给自己投下了终身副总统赞成票。你离白宫只差半毫米，却输给了建国先贤的数学题。',
+      '538张选举人票像被瑞士军刀劈成两半，精确停在269比269！最高法院大法官集体加班泡咖啡，众议院按“一州一票”规则举手投票，26个红州代表团一秒宣判你出局；JD·万斯在参议院顺手给自己投了副总统赞成票。你赢了普选，却输给了两百四十年前的一道小学算术规则。',
     badgeLabel: 'DEADLOCK · 269–269',
     theme: 'loss',
     hint: '非常规结局：最终双方选举人票精确战成 269 比 269。',
+    newspaper: {
+      name: 'The Washington Post',
+      motto: 'DEMOCRACY DIES IN DARKNESS',
+      location: 'WASHINGTON, D.C.',
+      editionTag: 'CONSTITUTIONAL DEADLOCK EXTRA',
+      mastheadFont: 'blackletter',
+    },
   },
 
   // ==================== NORMAL & PLAUSIBLE DEFEATS (4) ====================
@@ -211,48 +323,76 @@ export const ENDING_CATALOG: EndingCatalogEntry[] = [
     isHidden: false,
     category: 'loss',
     title: '85% IN BROOKLYN, LOST IN ERIE COUNTY',
-    subtitle: '非常规败选 · Wokes主导的推特胜利，现实选举惨败',
+    subtitle: '非常规败选 · 推特学术圈赢麻了，铁锈带夜班工人全投了对面',
     epilogue:
-      '你在布鲁克林、旧金山和学术研讨会上拿下了创纪录的赞美与转发量，每一条推文都完美符合道德洁癖——唯一的缺点是宾夕法尼亚的伊利县、威斯康星的基诺沙和内华达的服务业工人根本没听懂你在讲什么，他们把川普送回了无限连任宝座。',
+      '你在布鲁克林咖啡馆、斯坦福研讨会和蓝V转发榜上斩获了满分口碑，每一条推文都滴水不漏、绝不冒犯任何群体——唯一的小瑕疵是宾州伊利县和威斯康星机床厂的选民连词典都没翻开就勾了对面。恭喜，你赢得了诺贝尔键盘正确奖，川普赢得了白宫。',
     badgeLabel: 'DEFEAT · TWITTER BUBBLE',
     theme: 'loss',
     hint: '败选结局：最终主导派系为“Wokes”且选举人票不足 270。',
+    newspaper: {
+      name: 'The New York Times',
+      motto: 'ALL THE NEWS THAT’S FIT TO PRINT',
+      location: 'NEW YORK, NY',
+      editionTag: 'OPINION & METROPOLITAN POSTMORTEM',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'consultants_graveyard',
     isHidden: false,
     category: 'loss',
     title: 'BELTWAY CONSULTANTS’ GRAVEYARD',
-    subtitle: '惜败结局 · 240–268票体面落选，顾问团拿走八位数酬金',
+    subtitle: '惜败结局 · 240–268票体面回家，华盛顿顾问团照样笑纳两千万美金支票',
     epilogue:
-      '你仅以微弱差距输在270票门口（240–268票）。华盛顿K街的政治顾问们早已收走两千万美元广告分成，在微软新闻直播间里一边喝红酒一边把败因甩锅给“选民不懂欣赏我们的政策白皮书”。川普大笑着在白宫草坪竖起第三座金色雕像。',
+      '你只差临门一脚就能跨过270票门槛，但在几个摇摆县精准掉进了零点几个百分点的冰窟里。真正赢麻的是华盛顿K街的顶级政治顾问——他们刚把八位数广告回扣存进信托基金，就顺手在MSNBC直播里叹着气把锅甩给了“草根选民不懂欣赏理性政策图表”。',
     badgeLabel: 'NARROW DEFEAT · 240–268',
     theme: 'loss',
     hint: '常规惜败：选举人票在 240–268 之间遗憾落败。',
+    newspaper: {
+      name: 'POLITICO',
+      motto: 'THE BELTWAY INSIDER PLAYBOOK',
+      location: 'ARLINGTON, VA',
+      editionTag: 'MORNING CONSULTING POSTMORTEM',
+      mastheadFont: 'condensed',
+    },
   },
   {
     id: 'rust_belt_betrayal',
     isHidden: false,
     category: 'loss',
     title: 'RUST BELT COLLAPSE: SUBURBS WEREN’T ENOUGH',
-    subtitle: '败选结局 · 赢了高学历郊区，但蓝墙三州全线失守',
+    subtitle: '败选结局 · 赢了整条精英郊区带，却眼睁睁看着PA/MI/WI蓝墙三连塌',
     epilogue:
-      '北弗吉尼亚、丹佛郊区和西雅图一如既往地优雅而蓝色，但宾夕法尼亚、密歇根和威斯康星在同一夜全部翻红。对着工厂倒闭名单空谈宏观经济曲线终究敌不过实打实的愤怒，你只能眼睁睁看着万斯在俄亥俄工厂门口开香槟。',
+      '北弗吉尼亚的高学历妈妈团与丹佛IT白领全票把你送进热搜榜首，但宾夕法尼亚、密歇根和威斯康星在同一小时集体翻红。拿着一份PPT图表向失业钢铁镇解释“宏观通胀曲线其实正在好转”，最终换来了万斯在俄亥俄街头开着啤酒卡车全城巡游。',
     badgeLabel: 'DEFEAT · BLUE WALL FELL',
     theme: 'loss',
     hint: '败选结局：总票数低于 270 且同时输掉 PA、MI、WI 蓝墙三州。',
+    newspaper: {
+      name: 'The Philadelphia Inquirer',
+      motto: 'INDEPENDENT VOICE OF PENNSYLVANIA SINCE 1829',
+      location: 'PHILADELPHIA, PA',
+      editionTag: 'KEYSTONE BLUE WALL COLLAPSE',
+      mastheadFont: 'blackletter',
+    },
   },
   {
     id: 'dynasty_loss',
     isHidden: false,
     category: 'loss',
     title: 'THE TRUMP–VANCE ETERNAL DYNASTY',
-    subtitle: '常规惨败 · 2027修宪后的黑暗帝国正式落成',
+    subtitle: '常规惨败 · 2027修宪王朝正式登基，海湖庄园变成新首都',
     epilogue:
-      '你彻底没能阻挡住废除第22修正案后的巨轮。开票夜还没结束，川普就已经宣布把白宫改名为“海湖庄园北方行宫”，JD·万斯开始物色自己2036年的副手，马可·卢比奥正式签收了一辈子当“预备国务卿”的劳务合同。推特治国万岁，美利坚大概真的没救了。',
+      '第22修正案彻底躺进了国家档案馆地下室的碎纸篓里。开票夜还没到十一点，川普就宣布把白宫南草坪改名为“海湖庄园北方高尔夫行宫”，JD·万斯忙着挑2036年接班人，马可·卢比奥面带微笑签下了一份终身无限续杯矿泉水的《预备国务卿卖身契》。',
     badgeLabel: 'DEFEAT · DYNASTY',
     theme: 'loss',
     hint: '常规败选：未能凑够 270 票且未触发其他特定败选结局。',
+    newspaper: {
+      name: 'USA TODAY',
+      motto: 'THE NATION’S BREAKFAST-TABLE PAPER',
+      location: 'MCLEAN, VA',
+      editionTag: 'ELECTION SPECIAL · DYNASTY DAWN',
+      mastheadFont: 'condensed',
+    },
   },
 ];
 
@@ -281,58 +421,22 @@ export function evaluateEndings(
   const m = state.margins;
 
   const deepSouthCodes: StateCode[] = ['AL', 'MS', 'LA', 'SC', 'AR', 'TN'];
-  const deepSouthWon = deepSouthCodes.filter((c) => m[c] > 0).length;
-  const coastalLost = (['NY', 'CA', 'MA'] as StateCode[]).some((c) => m[c] <= 0);
+  const deepSouthWon = deepSouthCodes.filter((c) => m[c] >= 0).length;
+  const coastalLost = (['NY', 'CA', 'MA'] as StateCode[]).some((c) => m[c] < 0);
 
   const candidates: ScoredEnding[] = [];
 
-  // 1. Pigasus catastrophic humiliation
-  if (
-    demEV <= 12 ||
-    (demEV < 120 && m.DC <= 0) ||
-    (state.flags.pigasusCount > 0 && (demEV < 185 || m.IL <= 0)) ||
-    (demEV <= 60 && m.MN <= 0)
-  ) {
+  // 1. 269–269 Exact Tie (Constitutional Contingent Election — always highest primary priority)
+  if (demEV === 269) {
     candidates.push({
-      ending: ENDINGS_BY_ID.pigasus,
-      specificity: 65 + state.flags.pigasusCount * 25 + (demEV <= 12 ? 35 : 0),
+      ending: ENDINGS_BY_ID.tie_269,
+      specificity: 150,
     });
   }
 
-  // 2. Mondale 1984 homage
+  // 2. ALFALFA BILL (MUST strictly win Oklahoma OK >= 0)
   if (
-    (demEV < 110 && m.MN > 0) ||
-    (demEV < 220 && m.MN > 0 && (m.MN < 3.5 || state.flags.mondaleDefense))
-  ) {
-    candidates.push({
-      ending: ENDINGS_BY_ID.mondale,
-      specificity: 68 + (state.flags.mondaleDefense ? 30 : 0) + (demEV < 110 ? 15 : 0),
-    });
-  }
-
-  // 3. WHAT THE FUCK, DIXIECRAT?!?!?! (Win Deep South + lose CA, NY, or MA + WIN >= 270)
-  if (demEV >= 270 && deepSouthWon >= 2 && coastalLost) {
-    candidates.push({
-      ending: ENDINGS_BY_ID.dixiecrat,
-      specificity: 86 + (state.flags.dixiecratUsed ? 20 : 0) + (m.AL > 0 ? 8 : 0),
-    });
-  }
-
-  // 4. Segregation now, segregation tomorrow, segregation forever! (MUST strictly win Alabama AL > 0 + lose < 270)
-  if (
-    demEV < 270 &&
-    m.AL > 0 &&
-    (deepSouthWon >= 2 || state.flags.dixiecratUsed)
-  ) {
-    candidates.push({
-      ending: ENDINGS_BY_ID.segregation_now,
-      specificity: 76 + (state.flags.dixiecratUsed ? 20 : 0) + Math.max(0, m.AL),
-    });
-  }
-
-  // 5. ALFALFA BILL (MUST strictly win Oklahoma OK > 0)
-  if (
-    m.OK > 0 &&
+    m.OK >= 0 &&
     (state.flags.alfalfaBillUsed ||
       state.ideology === 'populist' ||
       state.ideology === 'conservative' ||
@@ -343,63 +447,121 @@ export function evaluateEndings(
         ...ENDINGS_BY_ID.alfalfa_bill,
         theme: demEV >= 270 ? 'victory' : 'chaos',
       },
-      specificity: 82 + (state.flags.alfalfaBillUsed ? 25 : 0) + Math.max(0, m.OK),
+      specificity:
+        96 +
+        (state.flags.alfalfaBillUsed ? 24 : 0) +
+        Math.min(8, Math.max(0, m.OK)),
     });
   }
 
-  // 6. KINGFISH HUEY LONG IN LOUISIANA AGAIN? (MUST strictly win Louisiana LA > 0)
+  // 3. WHAT THE FUCK, DIXIECRAT?!?!?! (Win Deep South + lose CA, NY, or MA + WIN >= 270)
+  if (demEV >= 270 && deepSouthWon >= 2 && coastalLost) {
+    candidates.push({
+      ending: ENDINGS_BY_ID.dixiecrat,
+      specificity:
+        102 + (state.flags.dixiecratUsed ? 16 : 0) + (m.AL >= 0 ? 4 : 0),
+    });
+  }
+
+  // 4. Segregation now, segregation tomorrow, segregation forever! (Win AL >= 0 + outright defeat < 269)
   if (
-    m.LA > 0 &&
-    (state.meters.populism >= 62 || state.ideology === 'populist' || state.flags.hueyLongUsed)
+    demEV < 269 &&
+    m.AL >= 0 &&
+    (deepSouthWon >= 2 || state.flags.dixiecratUsed)
+  ) {
+    candidates.push({
+      ending: ENDINGS_BY_ID.segregation_now,
+      specificity:
+        102 +
+        (state.flags.dixiecratUsed ? 16 : 0) +
+        Math.min(8, Math.max(0, m.AL)),
+    });
+  }
+
+  // 5. Yankee–Red Sox Miracle (>= 270 EV + 2 MLB flags + NY>=0 & MA>=0 + lose PA<0 & IL<0 to Phillies/White Sox)
+  if (
+    demEV >= 270 &&
+    state.flags.yankeeRedSoxCount >= 2 &&
+    m.NY >= 0 &&
+    m.MA >= 0 &&
+    m.PA < 0 &&
+    m.IL < 0
+  ) {
+    candidates.push({
+      ending: ENDINGS_BY_ID.yankee_redsox,
+      specificity: 104 + Math.min(10, state.flags.yankeeRedSoxCount * 3),
+    });
+  }
+
+  // 6. Mondale 1984 homage (outright defeat < 269 + holds MN)
+  if (
+    demEV < 269 &&
+    m.MN >= 0 &&
+    (demEV < 110 || (demEV < 220 && (m.MN < 3.5 || state.flags.mondaleDefense)))
+  ) {
+    candidates.push({
+      ending: ENDINGS_BY_ID.mondale,
+      specificity:
+        86 + (state.flags.mondaleDefense ? 24 : 0) + (demEV < 110 ? 12 : 0),
+    });
+  }
+
+  // 7. Pigasus catastrophic humiliation (MUST lose < 269 EV — never triggers on victory or 269 tie)
+  if (
+    demEV < 269 &&
+    (demEV <= 12 ||
+      (demEV < 120 && m.DC < 0) ||
+      (demEV <= 80 && m.MN < 0) ||
+      (state.flags.pigasusCount > 0 &&
+        (demEV < 185 || (demEV < 215 && m.IL < 0))))
+  ) {
+    candidates.push({
+      ending: ENDINGS_BY_ID.pigasus,
+      specificity:
+        78 +
+        (state.flags.pigasusCount > 0 ? 20 : 0) +
+        (demEV < 140 ? 14 : 0) +
+        (demEV <= 60 ? 10 : 0),
+    });
+  }
+
+  // 8. KINGFISH HUEY LONG IN LOUISIANA AGAIN? (MUST strictly win Louisiana LA >= 0)
+  if (
+    m.LA >= 0 &&
+    (state.meters.populism >= 62 ||
+      state.ideology === 'populist' ||
+      state.flags.hueyLongUsed)
   ) {
     candidates.push({
       ending: {
         ...ENDINGS_BY_ID.huey_long,
         theme: demEV >= 270 ? 'victory' : 'chaos',
       },
-      specificity: 72 + (state.flags.hueyLongUsed ? 20 : 0) + (state.ideology === 'populist' ? 10 : 0) + Math.max(0, m.LA),
+      specificity:
+        80 +
+        (state.flags.hueyLongUsed ? 10 : 0) +
+        (state.ideology === 'populist' ? 6 : 0) +
+        Math.min(5, Math.max(0, m.LA)),
     });
   }
 
-  // 7. Texas has flipped blue—you still lost ……
-  if (m.TX > 0 && demEV < 270) {
+  // 9. Texas has flipped blue—you still lost …… (< 269 EV)
+  if (m.TX >= 0 && demEV < 269) {
     candidates.push({
       ending: ENDINGS_BY_ID.bluxas_lost,
-      specificity: 74 + Math.max(0, m.TX),
+      specificity: 78 + Math.min(8, Math.max(0, m.TX)),
     });
   }
 
-  // 8. Yankee–Red Sox Miracle
-  if (
-    demEV >= 270 &&
-    state.flags.yankeeRedSoxCount >= 2 &&
-    m.NY > 10 &&
-    m.MA > 20 &&
-    m.PA > 0
-  ) {
-    candidates.push({
-      ending: ENDINGS_BY_ID.yankee_redsox,
-      specificity: 80 + state.flags.yankeeRedSoxCount * 10,
-    });
-  }
-
-  // 9. FDR IN 2028 (broad landslide >= 385 EV — co-unlocks alongside specific hidden victories without erasing them)
-  if (demEV >= 385) {
+  // 10. FDR IN 2028 (strictly raised to >= 415 EV — impossible via blind Option 1 spam)
+  if (demEV >= 415) {
     const fdr = ENDINGS_BY_ID.fdr_2028;
     candidates.push({
       ending: {
         ...fdr,
-        epilogue: `你横扫全美 ${demEV} 张选举人票！从五大湖到阳光带，从西海岸到阿巴拉契亚边缘，整片大陆被刷成了令人窒息的深蓝。川普的“无限连任”白日梦在凌晨两点前彻底蒸发，万斯连夜清空推特草稿箱，卢比奥买光了机场便利店的矿泉水。历史学家将这一夜定名为“新新政元年”。`,
+        epilogue: `全美选举人票定格在惊世骇俗的 ${demEV} 张！从伊利湖钢铁厂到亚利桑那仙人掌带，连深红州郡县都冒出蓝色惊叹号。凌晨两点，川普的“无限连任”金箔皇冠在电视直播里当场化灰，JD·万斯连夜把推特账号改成私人摄影博客，马可·卢比奥一口气拧空了两箱机场矿泉水并递交了退休申请。`,
       },
-      specificity: 55 + (demEV >= 435 ? 25 : 0),
-    });
-  }
-
-  // 10. 269–269 Exact Tie
-  if (demEV === 269) {
-    candidates.push({
-      ending: ENDINGS_BY_ID.tie_269,
-      specificity: 105,
+      specificity: 60 + (demEV >= 425 ? 15 : 0),
     });
   }
 
@@ -416,10 +578,10 @@ export function evaluateEndings(
   if (demEV >= 270) {
     let primary: EndingResult;
     if (
-      m.AZ > 0 &&
-      m.GA > 0 &&
-      m.NC > 0 &&
-      (m.PA <= 0 || m.MI <= 0 || m.WI <= 0)
+      m.AZ >= 0 &&
+      m.GA >= 0 &&
+      m.NC >= 0 &&
+      (m.PA < 0 || m.MI < 0 || m.WI < 0)
     ) {
       primary = ENDINGS_BY_ID.sun_belt_realignment;
     } else if (state.ideology === 'dark' || state.meters.chaos >= 75) {
@@ -440,7 +602,7 @@ export function evaluateEndings(
   let primary: EndingResult;
   if (state.ideology === 'woke') {
     primary = ENDINGS_BY_ID.woke_echo_chamber;
-  } else if (m.PA <= 0 && m.MI <= 0 && m.WI <= 0 && demEV >= 180) {
+  } else if (m.PA < 0 && m.MI < 0 && m.WI < 0 && demEV >= 180) {
     primary = ENDINGS_BY_ID.rust_belt_betrayal;
   } else if (demEV >= 240) {
     primary = ENDINGS_BY_ID.consultants_graveyard;

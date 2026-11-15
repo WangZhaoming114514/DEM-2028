@@ -34,6 +34,18 @@
   font-variant-numeric: tabular-nums;
 }
 
+.font-masthead-blackletter {
+  font-family: "UnifrakturMaguntia", "Playfair Display", Georgia, serif;
+}
+
+.font-masthead-serif {
+  font-family: "Playfair Display", "Source Serif 4", Georgia, serif;
+}
+
+.font-editorial-body {
+  font-family: "Source Serif 4", "Plus Jakarta Sans", "PingFang SC", Georgia, serif;
+}
+
 /* Crisp broadcast scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

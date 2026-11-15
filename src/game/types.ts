@@ -169,6 +169,14 @@ export interface ElectoralSummary {
 
 export type EndingCategory = 'victory' | 'unconventional' | 'loss' | 'hidden';
 
+export interface NewspaperMeta {
+  name: string;
+  motto: string;
+  location: string;
+  editionTag: string;
+  mastheadFont: 'blackletter' | 'serif' | 'condensed';
+}
+
 export interface EndingResult {
   id: string;
   isHidden: boolean;
@@ -178,6 +186,7 @@ export interface EndingResult {
   epilogue: string;
   badgeLabel: string;
   theme: 'victory' | 'loss' | 'chaos' | 'cursed';
+  newspaper: NewspaperMeta;
 }
 
 export interface EndingCatalogEntry extends EndingResult {
