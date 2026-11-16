@@ -1,4 +1,7 @@
 import React from 'react';
+import portraitRubioImg from '../assets/images/portrait_rubio_1794730913609.jpg';
+import portraitTrumpImg from '../assets/images/portrait_trump_1794685052595.jpg';
+import portraitVanceImg from '../assets/images/portrait_vance_1794685052521.jpg';
 import { IDEOLOGIES_BY_ID } from '../game/ideologies';
 import { ROUND_SCENARIOS } from '../game/scenarios';
 import { CampaignState, FeedItem, SpeakerId, TweetChoice } from '../game/types';
@@ -10,15 +13,15 @@ interface TwitterArenaProps {
 
 const AVATAR_MAP: Record<SpeakerId, { src: string; alt: string }> = {
   trump: {
-    src: '/src/assets/images/portrait_trump_1794685052595.jpg',
+    src: portraitTrumpImg,
     alt: 'Donald Trump 头像',
   },
   vance: {
-    src: '/src/assets/images/portrait_vance_1794685052521.jpg',
+    src: portraitVanceImg,
     alt: 'JD Vance 头像',
   },
   rubio: {
-    src: '/src/assets/images/portrait_rubio_1794730913609.jpg',
+    src: portraitRubioImg,
     alt: 'Marco Rubio 头像',
   },
 };

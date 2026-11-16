@@ -1,4 +1,8 @@
 import React from 'react';
+import portraitRubioImg from '../assets/images/portrait_rubio_1794730913609.jpg';
+import portraitTrumpImg from '../assets/images/portrait_trump_1794685052595.jpg';
+import portraitVanceImg from '../assets/images/portrait_vance_1794685052521.jpg';
+import titleBgImg from '../assets/images/title_bg_1794685052392.jpg';
 import { ENDING_CATALOG } from '../game/endings';
 import { IDEOLOGIES } from '../game/ideologies';
 import { UnlockedEndingRecord } from '../game/types';
@@ -22,7 +26,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
       {/* Illustrated Key-Art Backdrop with calm left-third scrim */}
       <div className="pointer-events-none absolute inset-0">
         <img
-          src="/src/assets/images/title_bg_1794685052392.jpg"
+          src={titleBgImg}
           alt="2028华盛顿大选广播演播室夜景"
           referrerPolicy="no-referrer"
           className="h-full w-full object-cover object-center opacity-70"
@@ -162,7 +166,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               <div className="space-y-3">
                 <div className="flex items-start gap-3.5 rounded-md border border-slate-800 bg-[#111827]/90 p-3.5">
                   <img
-                    src="/src/assets/images/portrait_trump_1794685052595.jpg"
+                    src={portraitTrumpImg}
                     alt="Donald J. Trump"
                     className="h-14 w-14 shrink-0 rounded object-cover border border-slate-700"
                   />
@@ -179,7 +183,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
                 <div className="flex items-start gap-3.5 rounded-md border border-slate-800 bg-[#111827]/90 p-3.5">
                   <img
-                    src="/src/assets/images/portrait_vance_1794685052521.jpg"
+                    src={portraitVanceImg}
                     alt="JD Vance"
                     className="h-14 w-14 shrink-0 rounded object-cover border border-slate-700"
                   />
@@ -196,7 +200,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
                 <div className="flex items-start gap-3.5 rounded-md border border-slate-800 bg-[#111827]/90 p-3.5">
                   <img
-                    src="/src/assets/images/portrait_rubio_1794730913609.jpg"
+                    src={portraitRubioImg}
                     alt="Marco Rubio"
                     className="h-14 w-14 shrink-0 rounded object-cover border border-slate-700"
                   />
